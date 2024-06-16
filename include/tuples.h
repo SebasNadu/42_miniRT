@@ -51,12 +51,11 @@ t_vector	*cross(t_vector *a, t_vector *b, t_vector *out);
 t_tuple		*reflect(t_vector *in, t_vector *normal, t_tuple *out);
 
 /* Color creation  */
-t_color		new_color(double r, double g, double b);
-
+t_color		*new_color(double r, double g, double b, t_color *out);
 /*  Color operations */
-t_color		add_color(t_color c1, t_color c2);
-t_color		subtract_color(t_color c1, t_color c2);
-t_color		multiply_color(t_color c, double scalar);
+t_color		*add_color(t_color *c1, t_color *c2, t_color *out);
+t_color		*subtract_color(t_color *c1, t_color *c2, t_color *out);
+t_color		*multiply_color(t_color *c, double scalar, t_color *out);
 t_color		*hadamard_product(t_color *c1, t_color *c2, t_color *out);
 
 #endif

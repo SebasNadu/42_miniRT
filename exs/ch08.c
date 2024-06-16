@@ -16,7 +16,7 @@ void	create_background(t_world *world)
 
 	new_sphere(&floor);
 	set_transform(&floor, scaling(10, 0.01, 10, &multi[0]));
-	floor.material.color = new_color(1, 0.9, 0.9);
+	new_color(1, 0.9, 0.9, &floor.material.color);
 	floor.material.specular = 0;
 	new_sphere(&left_wall);
 	multiply_matrices(
@@ -51,20 +51,20 @@ void	create_spheres(t_world *world)
 	t_matrix	m[2];
 
 	new_sphere(&middle);
-	middle.material.color = new_color(0.1, 1, 0.5);
+	new_color(0.1, 1, 0.5, &middle.material.color);
 	middle.material.diffuse = 0.7;
 	middle.material.specular = 0.3;
 	set_transform(&middle, translation(-0.5, 1, 0.5, &m[0]));
 	new_sphere(&right);
 	right.sphere.radius = 0.5;
 	set_transform(&right, translation(0, 2, 0.5, &m[0]));
-	right.material.color = new_color(0.5, 1, 0.1);
+	new_color(0.5, 1, 0.1, &right.material.color);
 	right.material.diffuse = 0.7;
 	right.material.specular = 0.3;
 	new_sphere(&left);
 	set_transform(&left, transformations(2, scaling(0.33, 0.33, 0.33, &m[0]),
 			translation(-1.5, 1.5, -1, &m[1])));
-	left.material.color = new_color(1, 0.8, 0.1);
+	new_color(1, 0.8, 0.1, &left.material.color);
 	left.material.diffuse = 0.7;
 	left.material.specular = 0.3;
 	world->objs[3] = middle;
@@ -80,7 +80,7 @@ void	create_ligts(t_world *world)
 	world->lights = malloc(sizeof(t_light));
 	world->lights_count = 1;
 	new_point(-10, 10, -10, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &world->lights[0]);
 }
 

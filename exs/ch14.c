@@ -30,8 +30,8 @@ t_color	random_color(void)
 {
 	t_color	c;
 
-	c = new_color(random_double(0.01, 0.99), random_double(0.01, 0.99),
-			random_double(0.01, 0.99));
+	new_color(random_double(0.01, 0.99), random_double(0.01, 0.99),
+		random_double(0.01, 0.99), &c);
 	return (c);
 }
 
@@ -84,7 +84,7 @@ void	create_scene1(t_world *world)
 		}
 	}
 	new_plane(&plane);
-	plane.material.color = new_color(0.5, 0.5, 0.5);
+	new_color(0.5, 0.5, 0.5, &plane.material.color);
 	multiply_matrices(rotation_x(cos(-M_PI / 8), sin(-M_PI / 8), &m[0]),
 			translation(0, -10, 0, &m[1]), &m[0]);
 	set_transform(&plane, &m[0]);
@@ -121,6 +121,7 @@ void	create_scene2(t_world *world)
 	t_shape		*sides;
 	t_shape		*hexagon;
 	t_matrix	m;
+	t_color		c;
 
 	world->objs = malloc(1 * sizeof(t_shape));
 	world->objs_count = 1;
@@ -135,8 +136,8 @@ void	create_scene2(t_world *world)
 		add_child(hexagon, &sides[i]);
 	}
 	new_radial_gradient_pattern(
-		new_solid_pattern(new_color(0.5, 0.7, 0.9)),
-		new_solid_pattern(new_color(0.6, 0.3, 0.1)), &hexagon->material.pattern);
+		new_solid_pattern(new_color(0.5, 0.7, 0.9, &c)),
+		new_solid_pattern(new_color(0.6, 0.3, 0.1, &c)), &hexagon->material.pattern);
 	set_pattern_transform(&hexagon->material.pattern,
 		scaling(0.33, 0.33, 0.33, &m));
 }
@@ -149,7 +150,7 @@ void	create_lights1(t_world *world)
 	world->lights = malloc(1 * sizeof(t_light));
 	world->lights_count = 1;
 	new_point(0, 50, -25, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &world->lights[0]);
 }
 

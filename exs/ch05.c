@@ -58,8 +58,8 @@ void	set_params(t_params *params)
 	params->pixel_size = params->wall_size / HEIGHT;
 	params->half = params->wall_size * 0.5;
 	new_point(0, 0, -5, &params->ray_origin);
-	params->sphere_color = new_color(0.6, 0.1, 0.1);
-	params->bg_color = new_color(0.1, 0.2, 0.3);
+	new_color(0.6, 0.1, 0.1, &params->sphere_color);
+	new_color(0.1, 0.2, 0.3, &params->bg_color);
 	new_sphere(&params->sphere);
 	// set_transform(&params->sphere, scaling(1, 0.5, 1));
 	// set_transform(&params->sphere, scaling(0.5, 1, 1));

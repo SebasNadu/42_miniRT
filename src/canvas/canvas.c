@@ -15,16 +15,18 @@ bool	new_canvas(t_canvas *canvas, int width, int height, char *title)
 	return (true);
 }
 
-t_color	read_pixel(mlx_image_t *img, uint32_t x, uint32_t y)
+t_color	*read_pixel(mlx_image_t *img, uint32_t x, uint32_t y, t_color *color)
 {
 	uint8_t			*pixel;
 	double const	inv_255 = 0.00392157;
 
 	if ((x >= img->width || y >= img->height) || !img || !img->pixels)
-		return ((t_color){0, 0, 0});
+		return (NULL);
 	pixel = img->pixels + ((y * img->width + x) << 2);
-	return (new_color(pixel[0] * inv_255, pixel[1] * inv_255,
-			pixel[2] * inv_255));
+	color->r = pixel[0] * inv_255;
+	color->g = pixel[1] * inv_255;
+	color->b = pixel[2] * inv_255;
+	return (color);
 }
 
 t_color	*pixel_at(mlx_texture_t *texture, uint32_t x, uint32_t y,

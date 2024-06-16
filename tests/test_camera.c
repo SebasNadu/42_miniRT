@@ -95,8 +95,8 @@ Test(camera, rendering_a_world_with_a_camera)
 	set_transform_camera(&rt.camera, view_transform(&from, &to, &up, &m));
 	new_canvas(&rt.canvas, 11, 11, "test_camera");
 	render(&rt);
-	result = read_pixel(rt.canvas.img, 5, 5);
-	expected = new_color(0.38066, 0.47583, 0.2855);
+	read_pixel(rt.canvas.img, 5, 5, &result);
+	new_color(0.38066, 0.47583, 0.2855, &expected);
 	mlx_delete_image(rt.canvas.mlx, rt.canvas.img);
 	mlx_terminate(rt.canvas.mlx);
 	cr_assert(epsilon_eq(dbl, result.r, expected.r, 0.01));

@@ -9,7 +9,7 @@ void	create_light(char **rgb, double ratio, char **pos,t_light *light)
 	r = (ft_atof(rgb[0]) / 255) * ratio;
 	g = (ft_atof(rgb[1]) / 255) * ratio;
 	b = (ft_atof(rgb[2]) / 255) * ratio;
-	light->intensity = new_color(r, g, b);
+	new_color(r, g, b, &light->intensity);
 	new_point(
 		ft_atof(pos[0]), ft_atof(pos[1]), ft_atof(pos[2]), &light->position);
 	free_s(rgb);

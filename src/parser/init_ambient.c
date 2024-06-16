@@ -9,7 +9,7 @@ void	make_ambient(char **rgb, double ratio, t_world *world)
 	r = (ft_atof(rgb[0]) / 255) * ratio;
 	g = (ft_atof(rgb[1]) / 255) * ratio;
 	b = (ft_atof(rgb[2]) / 255) * ratio;
-	world->ambient = new_color(r, g, b);
+	new_color(r, g, b, &world->ambient);
 	free_s(rgb);
 }
 

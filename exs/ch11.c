@@ -15,14 +15,14 @@ void	create_background(t_world *world)
 	t_matrix	m;
 
 	new_plane(&water);
-	water.material.color = new_color(0.0, 0.4, 0.8);
+	new_color(0.0, 0.4, 0.8, &water.material.color);
 	water.material.diffuse = 0.3;
 	water.material.reflective = 0.4;
 	water.material.transparency = 0.9;
 	water.material.refractive_index = WATER;
 	water.cast_shadow = false;
 	new_plane(&water_bed);
-	water_bed.material.color = new_color(0.5, 0.25, 0.1);
+	new_color(0.5, 0.25, 0.1, &water_bed.material.color);
 	set_transform(&water_bed, translation(0, -5, 0, &m));
 	water_bed.material.diffuse = 0.9;
 	water_bed.material.reflective = 0.0;
@@ -40,12 +40,13 @@ void	create_spheres(t_world *world)
 	t_shape		left;
 	t_shape		behind;
 	t_matrix	m[2];
+	t_color		tmp;
 
 	new_sphere(&middle);
-	middle.material.color = new_color(0.9, 0.9, 0.9);
+	new_color(0.9, 0.9, 0.9, &middle.material.color);
 	translation(-0.5, 0, 0.5, &m[0]);
 	set_transform(&middle, &m[0]);
-	middle.material.ambient = new_color(0.1, 0.1, 0.1);
+	new_color(0.1, 0.1, 0.1, &middle.material.ambient);
 	middle.material.diffuse = 0.1;
 	middle.material.specular = 5.0;
 	middle.material.shininess = 1200.0;
@@ -53,20 +54,20 @@ void	create_spheres(t_world *world)
 	middle.material.transparency = 0.9;
 	middle.material.refractive_index = GLASS;
 	new_sphere(&right);
-	right.material.color = new_color(5, 0.5, 0.1);
+	new_color(5, 0.5, 0.1, &right.material.color);
 	multiply_matrices(translation(2, -0.5, 0, &m[1]),
 		scaling(0.2, 0.2, 0.2, &m[0]), &m[1]);
 	set_transform(&right, &m[1]);
 	new_sphere(&left);
 	left.material.reflective = 0.9;
-	left.material.color = new_color(0, 0, 0);
-	new_full_gradient_pattern(new_solid_pattern(new_color(1, 0, 0)),
-		new_solid_pattern(left.material.color), &left.material.pattern);
+	new_color(0, 0, 0, &left.material.color);
+	new_full_gradient_pattern(new_solid_pattern(new_color(1, 0, 0, &tmp)),
+		new_solid_pattern(&left.material.color), &left.material.pattern);
 	multiply_matrices(translation(-2, -0.2, -1, &m[0]),
 		scaling(0.33, 0.33, 0.33, &m[1]), &m[0]);
 	set_transform(&left, &m[0]);
 	new_sphere(&behind);
-	behind.material.color = new_color(0.8, 0, 0);
+	new_color(0.8, 0, 0, &behind.material.color);
 	multiply_matrices(translation(-0.2, 0.2, -0.2, &m[0]),
 		scaling(0.33, 0.33, 0.33, &m[1]), &m[0]);
 	set_transform(&behind, &m[0]);
@@ -84,7 +85,7 @@ void	create_ligts(t_world *world)
 	world->lights = malloc(sizeof(t_light));
 	world->lights_count = 1;
 	new_point(-5, 5, -5, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &world->lights[0]);
 }
 

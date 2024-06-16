@@ -1,8 +1,9 @@
 #include "patterns.h"
 
-static t_color	uv_texture_map_at(t_pattern *pattern, t_point *shape_point);
-static t_color	uv_cubic_texture_map_at(t_pattern *pattern,
-					t_point *shape_point);
+static t_color	*uv_texture_map_at(t_pattern *pattern, t_point *shape_point,
+					t_color *out);
+static t_color	*uv_cubic_texture_map_at(t_pattern *pattern,
+					t_point *shape_point, t_color *out);
 
 t_pattern	*new_texture_map(t_pattern *pattern, char const *path)
 {
@@ -40,29 +41,28 @@ t_pattern	*new_cubic_texture_map(t_pattern *pattern, char const *paths[6])
 	return (pattern);
 }
 
-static t_color	uv_texture_map_at(t_pattern *pattern, t_point *shape_point)
+static t_color	*uv_texture_map_at(t_pattern *pattern, t_point *shape_point,
+					t_color *out)
 {
 	t_point		pattern_point;
 	double		uv[2];
-	t_color		color;
 
 	multiply_matrix_by_tuple(&pattern->inverse, shape_point, &pattern_point);
 	pattern->texture_map.uv_mapping_fn(&pattern_point, uv);
-	uv_texture_color_at(pattern->texture[0], &uv[0], &uv[1], &color);
-	return (color);
+	uv_texture_color_at(pattern->texture[0], &uv[0], &uv[1], out);
+	return (out);
 }
 
-static t_color	uv_cubic_texture_map_at(t_pattern *pattern,
-					t_point *shape_point)
+static t_color	*uv_cubic_texture_map_at(t_pattern *pattern,
+					t_point *shape_point, t_color *out)
 {
 	t_point		pattern_point;
 	double		face_uv[3];
-	t_color		color;
 
 	multiply_matrix_by_tuple(&pattern->inverse, shape_point, &pattern_point);
 	face_uv[0] = face_from_point(&pattern_point);
 	pattern->texture_map.uv_mapping_fn(&pattern_point, face_uv);
 	uv_texture_color_at(pattern->texture[(int)face_uv[0]], &face_uv[1],
-		&face_uv[2], &color);
-	return (color);
+		&face_uv[2], out);
+	return (out);
 }

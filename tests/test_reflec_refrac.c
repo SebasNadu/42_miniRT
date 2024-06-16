@@ -34,16 +34,18 @@ Test(world, reflected_color_for_a_nonreflective_material)
 	t_hit		*i;
 	t_comps		comps;
 	t_color		color;
+	t_color		expected;
 	t_point		p;
 	t_vector	v;
 
 	world = default_world();
 	new_ray(new_point(0, 0, 0, &p), new_vector(0, 0, 1, &v), &r);
-	world.objs[1].material.ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &world.objs[1].material.ambient);
 	i = intersection(1, &world.objs[0]);
 	comps = prepare_computations(i, &r, NULL);
-	color = reflected_color(&world, &comps);
-	cr_assert(color_eq(color, new_color(0, 0, 0)));
+	reflected_color(&world, &comps, &color);
+	new_color(0, 0, 0, &expected);
+	cr_assert(color_eq(color, expected));
 }
 
 Test(world, reflected_color_for_a_reflective_material)
@@ -65,8 +67,8 @@ Test(world, reflected_color_for_a_reflective_material)
 	new_ray(new_point(0, 0, -3, &p), new_vector(0, -sqrt(2)/2, sqrt(2)/2, &v), &r);
 	i = intersection(sqrt(2), &world.objs[1]);
 	comps = prepare_computations(i, &r, NULL);
-	color = reflected_color(&world, &comps);
-	result = new_color(0.19032, 0.2379, 0.14274);
+	reflected_color(&world, &comps, &color);
+	new_color(0.19032, 0.2379, 0.14274, &result);
 	// cr_assert(epsilon_eq(dbl, color.r, result.r, EPSILON));
 	// cr_assert(epsilon_eq(dbl, color.g, result.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.b, result.b, EPSILON));
@@ -91,8 +93,8 @@ Test(world, shade_hit_with_a_reflective_material)
 	new_ray(new_point(0, 0, -3, &p), new_vector(0, -sqrt(2)/2, sqrt(2)/2, &v), &r);
 	i = intersection(sqrt(2), &world.objs[1]);
 	comps = prepare_computations(i, &r, NULL);
-	color = shade_hit(&world, &comps);
-	result = new_color(0.87677, 0.92436, 0.82918);
+	shade_hit(&world, &comps, &color);
+	new_color(0.87677, 0.92436, 0.82918, &result);
 	// cr_assert(epsilon_eq(dbl, color.r, result.r, EPSILON));
 	// cr_assert(epsilon_eq(dbl, color.g, result.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.b, result.b, EPSILON));
@@ -110,7 +112,7 @@ Test(world, color_at_with_mutually_reflective_surfaces)
 	new_world(&world);
 	world.lights = malloc(sizeof(t_light));
 	world.lights_count = 1;
-	color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &color);
 	new_light(new_point(0, 0, 0, &p), &color, &world.lights[0]);
 	world.objs = malloc(sizeof(t_shape) * 2);
 	world.objs_count = 2;
@@ -121,7 +123,7 @@ Test(world, color_at_with_mutually_reflective_surfaces)
 	world.objs[1].material.reflective = 1;
 	set_transform(&world.objs[1], translation(0, 1, 0, &m));
 	new_ray(new_point(0, 0, 0, &p), new_vector(0, 1, 0, &v), &r);
-	color = color_at(&world, &r);
+	color_at(&world, &r, &color);
 	cr_assert(eq(ptr, &color, &color));
 }
 
@@ -144,8 +146,8 @@ Test(world, reflected_color_at_the_maximum_recursive_depth)
 	new_ray(new_point(0, 0, -3, &p), new_vector(0, -sqrt(2)/2, sqrt(2)/2, &v), &r);
 	i = intersection(sqrt(2), &world.objs[1]);
 	comps = prepare_computations(i, &r, NULL);
-	color = reflected_color(&world, &comps);
-	result = new_color(0, 0, 0);
+	reflected_color(&world, &comps, &color);
+	new_color(0, 0, 0, &result);
 	cr_assert(epsilon_eq(dbl, color.r, result.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.g, result.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.b, result.b, EPSILON));
@@ -262,7 +264,7 @@ Test(world, the_refracted_color_with_an_opaque_surface)
 	insert_intersection(&i, intersection(4, &world.objs[0]));
 	insert_intersection(&i, intersection(6, &world.objs[0]));
 	comps = prepare_computations(i, &r, i);
-	color = refracted_color(&world, &comps);
+	refracted_color(&world, &comps, &color);
 	cr_assert(eq(dbl, color.r, 0));
 	cr_assert(eq(dbl, color.g, 0));
 	cr_assert(eq(dbl, color.b, 0));
@@ -287,7 +289,7 @@ Test(world, the_refracted_color_at_the_maximum_recursive_depth)
 	insert_intersection(&i, intersection(6, &world.objs[0]));
 	comps = prepare_computations(i, &r, i);
 	world.remaining_recursion = 0;
-	color = refracted_color(&world, &comps);
+	refracted_color(&world, &comps, &color);
 	cr_assert(eq(dbl, color.r, 0));
 	cr_assert(eq(dbl, color.g, 0));
 	cr_assert(eq(dbl, color.b, 0));
@@ -311,7 +313,7 @@ Test(world, the_refracted_color_under_total_internal_reflection)
 	insert_intersection(&i, intersection(-sqrt(2)/2, &world.objs[0]));
 	insert_intersection(&i, intersection(sqrt(2)/2, &world.objs[0]));
 	comps = prepare_computations(hit(i), &r, i);
-	color = refracted_color(&world, &comps);
+	refracted_color(&world, &comps, &color);
 	cr_assert(eq(dbl, color.r, 0));
 	cr_assert(eq(dbl, color.g, 0));
 	cr_assert(eq(dbl, color.b, 0));
@@ -330,7 +332,7 @@ Test(world, the_refracted_color_with_a_refracted_ray)
 
 	i = NULL;
 	world = default_world();
-	world.objs[0].material.ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &world.objs[0].material.ambient);
 	world.objs[0].material.pattern = new_test_pattern();
 	world.objs[1].material.transparency = 1.0;
 	world.objs[1].material.refractive_index = 1.5;
@@ -340,7 +342,7 @@ Test(world, the_refracted_color_with_a_refracted_ray)
 	insert_intersection(&i, intersection(0.4899, &world.objs[1]));
 	insert_intersection(&i, intersection(0.9899, &world.objs[0]));
 	comps = prepare_computations(hit(i), &r, i);
-	color = refracted_color(&world, &comps);
+	refracted_color(&world, &comps, &color);
 	cr_assert(epsilon_eq(dbl, color.r, 0, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.g, 0.99888, EPSILON));
 	// cr_assert(epsilon_eq(dbl, color.b, 0.04725, EPSILON));
@@ -365,14 +367,14 @@ Test(world, shade_hit_with_a_reflective_material2)
 	world.objs[0].material.refractive_index = 1.5;
 	set_transform(&world.objs[0], translation(0, -1, 0, &m));
 	new_sphere(&world.objs[1]);
-	world.objs[1].material.color = new_color(1, 0, 0);
-	world.objs[1].material.ambient = new_color(0.5, 0.5, 0.5);
+	new_color(1, 0, 0, &world.objs[1].material.color);
+	new_color(0.5, 0.5, 0.5, &world.objs[1].material.ambient);
 	set_transform(&world.objs[1], translation(0, -3.5, -0.5, &m));
 	new_ray(new_point(0, 0, -3, &p), new_vector(0, -sqrt(2)/2, sqrt(2)/2, &v), &r);
 	insert_intersection(&i, intersection(sqrt(2), &world.objs[0]));
 	comps = prepare_computations(i, &r, i);
-	color = shade_hit(&world, &comps);
-	result = new_color(0.93642, 0.68642, 0.68642);
+	shade_hit(&world, &comps, &color);
+	new_color(0.93642, 0.68642, 0.68642, &result);
 	cr_assert(epsilon_eq(dbl, color.r, result.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.g, result.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.b, result.b, EPSILON));
@@ -462,15 +464,15 @@ Test(world, shade_hit_with_a_reflective_transparent_material)
 	world.objs[0].material.refractive_index = 1.5;
 	set_transform(&world.objs[0], translation(0, -1, 0, &m));
 	new_sphere(&world.objs[1]);
-	world.objs[1].material.color = new_color(1, 0, 0);
-	world.objs[1].material.ambient = new_color(0.5, 0.5, 0.5);
+	new_color(1, 0, 0, &world.objs[1].material.color);
+	new_color(0.5, 0.5, 0.5, &world.objs[1].material.ambient);
 	set_transform(&world.objs[1], translation(0, -3.5, -0.5, &m));
 	insert_intersection(&i, intersection(sqrt(2), &world.objs[0]));
 	comps = prepare_computations(i, &r, i);
-	color = shade_hit(&world, &comps);
+	shade_hit(&world, &comps, &color);
 	// original result from the book
 	// result = new_color(0.93391, 0.69643, 0.69243);
-	result = new_color(0.92590, 0.68642, 0.68643);
+	new_color(0.92590, 0.68642, 0.68643, &result);
 	cr_assert(epsilon_eq(dbl, color.r, result.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.g, result.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, color.b, result.b, EPSILON));

@@ -31,10 +31,10 @@ void	create_lights1(t_world *world)
 	world->lights = malloc(2 * sizeof(t_light));
 	world->lights_count = 2;
 	new_point(-45, -45, -45, &p);
-	c = new_color(0.3, 0.6, 0.95);
+	new_color(0.3, 0.6, 0.95, &c);
 	new_light(&p, &c, &world->lights[0]);
 	new_point(45, 15, -45, &p);
-	c = new_color(0.95, 0.6, 0.3);
+	new_color(0.95, 0.6, 0.3, &c);
 	new_light(&p, &c, &world->lights[1]);
 }
 

@@ -47,13 +47,13 @@ t_shape	*create_dice(t_color color)
 	new_csg(INTERSECT, s, c, &csg[0]);
 	new_group(&g[0]);
 	new_sphere(&d1[0]);
-	d1[0].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &d1[0].material.color);
 	multiply_matrices(translation(0, 0, -1, &m[1]), scaling(0.2, 0.2, 0.2, &m[0]), &m[1]);
 	set_transform(&d1[0], &m[1]);
 	add_child(&g[0], &d1[0]);
 	new_csg(DIFFERENCE, &csg[0], &g[0], &csg[1]);
 	new_sphere(&d1[1]);
-	d1[1].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &d1[1].material.color);
 	d2[0] = d1[1];
 	multiply_matrices(translation(-0.5, 0.5, -1, &m[0]), scaling(0.2, 0.2, 0.2, &m[1]), &m[0]);
 	set_transform(&d1[1], &m[0]);
@@ -65,7 +65,7 @@ t_shape	*create_dice(t_color color)
 	add_child(&g[1], &d2[0]);
 	new_csg(DIFFERENCE, &csg[1], &g[1], &csg[2]);
 	new_sphere(&d1[2]);
-	d1[2].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &d1[2].material.color);
 	d2[1] = d1[2];
 	d3[0] = d1[2];
 	multiply_matrices(translation(-0.5, 0.5, -1, &m[0]), scaling(0.2, 0.2, 0.2, &m[1]), &m[0]);
@@ -81,7 +81,7 @@ t_shape	*create_dice(t_color color)
 	add_child(&g[2], &d3[0]);
 	new_csg(DIFFERENCE, &csg[2], &g[2], &csg[3]);
 	new_sphere(&d1[3]);
-	d1[3].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &d1[3].material.color);
 	d2[2] = d1[3];
 	d3[1] = d1[3];
 	d4[0] = d1[3];
@@ -101,7 +101,7 @@ t_shape	*create_dice(t_color color)
 	add_child(&g[3], &d4[0]);
 	new_csg(DIFFERENCE, &csg[3], &g[3], &csg[4]);
 	new_sphere(&d1[4]);
-	d1[4].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &d1[4].material.color);
 	d2[3] = d1[4];
 	d3[2] = d1[4];
 	d4[1] = d1[4];
@@ -125,7 +125,7 @@ t_shape	*create_dice(t_color color)
 	add_child(&g[4], &d5[0]);
 	new_csg(DIFFERENCE, &csg[4], &g[4], &csg[5]);
 	new_sphere(&d1[5]);
-	d1[5].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &d1[5].material.color);
 	d2[4] = d1[5];
 	d3[3] = d1[5];
 	d4[2] = d1[5];
@@ -164,21 +164,25 @@ void	create_scene(t_world *world)
 	t_shape		*left_wall;
 	t_shape		*right_wall;
 	t_matrix	m[2];
+	t_color		c;
 
 	world->objs = malloc(2 * sizeof(t_shape));
 	world->objs_count = 2;
 	
-	csg_dice1 = create_dice(new_color(0.6, 0.2, 0.2));
+	new_color(0.6, 0.2, 0.2, &c);
+	csg_dice1 = create_dice(c);
 	multiply_matrices(translation(1.4, 0, 0.4, &m[0]),
 			rotation_x(cos(-M_PI), sin(-M_PI), &m[1]), &m[0]);
 	multiply_matrices(&m[0], rotation_y(cos(-M_PI_4), sin(-M_PI_4), &m[1]), &m[0]);
 	set_transform(csg_dice1, &m[0]);
-	csg_dice2 = create_dice(new_color(0.2, 0.2, 0.6));
+	new_color(0.2, 0.2, 0.6, &c);
+	csg_dice2 = create_dice(c);
 	multiply_matrices(translation(-1.4, 0, -0.4, &m[1]),
 			rotation_x(cos(M_PI), sin(M_PI), &m[0]), &m[1]);
 	multiply_matrices(&m[1], rotation_y(cos(M_PI_4), sin(M_PI_4), &m[0]), &m[1]);
 	set_transform(csg_dice2, &m[1]);
-	csg_dice3 = create_dice(new_color(0.2, 0.6, 0.2));
+	new_color(0.2, 0.6, 0.2, &c);
+	csg_dice3 = create_dice(c);
 	multiply_matrices(translation(0, 2, 0, &m[0]),
 			rotation_x(cos(M_PI), sin(M_PI), &m[1]), &m[0]);
 	multiply_matrices(&m[0], rotation_y(cos(M_PI_2), sin(M_PI_2), &m[1]), &m[0]);
@@ -186,22 +190,22 @@ void	create_scene(t_world *world)
 	floor = malloc(1 * sizeof(t_shape));
 	new_plane(floor);
 	floor->material.reflective = 0.3;
-	floor->material.color = new_color(1, 1, 1);
-	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9)), &floor->material.pattern);
+	new_color(1, 1, 1, &floor->material.color);
+	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c)),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &floor->material.pattern);
 	set_transform(floor, translation(0, -1, 0, &m[0]));
 	left_wall = malloc(1 * sizeof(t_shape));
 	right_wall = malloc(1 * sizeof(t_shape));
 	new_plane(left_wall);
 	new_plane(right_wall);
-	left_wall->material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &left_wall->material.color);
 	left_wall->material.reflective = 0.3;
-	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9)), &left_wall->material.pattern);
-	right_wall->material.color = new_color(1, 1, 1);
+	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c)),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &left_wall->material.pattern);
+	new_color(1, 1, 1, &right_wall->material.color);
 	right_wall->material.reflective = 0.3;
-	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9)), &right_wall->material.pattern);
+	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c)),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &right_wall->material.pattern);
 	multiply_matrices(translation(15, 0, 0, &m[0]),
 		rotation_y(cos(M_PI_4), sin(M_PI_4), &m[1]), &m[0]);
 	multiply_matrices(&m[0], rotation_x(cos(M_PI_2), sin(M_PI_2), &m[1]), &m[0]);
@@ -228,10 +232,10 @@ void	create_lights(t_world *world)
 	world->lights = malloc(2 * sizeof(t_light));
 	world->lights_count = 2;
 	new_point(-10, 10, -10, &p);
-	c = new_color(0.9, 0.9, 0.9);
+	new_color(0.9, 0.9, 0.9, &c);
 	new_light(&p, &c, &world->lights[0]);
 	new_point(5, -5, -10, &p);
-	c = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &c);
 	new_light(&p, &c, &world->lights[1]);
 }
 

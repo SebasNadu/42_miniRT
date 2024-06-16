@@ -15,7 +15,7 @@ bool	render(t_mini_rt	*rt)
 		while (++x < *rt->canvas.width)
 		{
 			ray_for_pixel(&rt->camera, x, y, &ray);
-			color = color_at(&rt->world, &ray);
+			color_at(&rt->world, &ray, &color);
 			write_pixel(rt->canvas.img, x, y, &color);
 		}
 	}

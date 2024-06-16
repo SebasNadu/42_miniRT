@@ -41,7 +41,7 @@ static void	render_clock(t_canvas *canvas)
 	t_point		points[2];
 	t_matrix	tmp;
 
-	color = new_color(0.5, 1, 0.5);
+	new_color(0.5, 1, 0.5, &color);
 	translation(*canvas->width * 0.5, 0, *canvas->height * 0.5,
 		&transformations[0]);
 	if (*canvas->width < *canvas->height)
@@ -67,7 +67,7 @@ static void	render_background(t_canvas *canvas)
 	uint32_t	color;
 	t_color	c_tmp;
 
-	c_tmp = new_color(0.3, 0.3, 1);
+	new_color(0.3, 0.3, 1, &c_tmp);
 	color = get_rgb(&c_tmp);
 	y = -1;
 	while (++y < *canvas->height)

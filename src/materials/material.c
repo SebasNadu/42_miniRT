@@ -2,8 +2,8 @@
 
 t_material	*new_material(t_material *material)
 {
-	material->color = new_color(1.0, 1.0, 1.0);
-	material->ambient = new_color(0.1, 0.1, 0.1);
+	new_color(1.0, 1.0, 1.0, &material->color);
+	new_color(0.1, 0.1, 0.1, &material->ambient);
 	material->diffuse = 0.9;
 	material->specular = 0.9;
 	material->shininess = 200.0;

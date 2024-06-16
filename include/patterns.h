@@ -9,7 +9,8 @@ typedef struct s_pattern		t_pattern;
 typedef struct s_checker		t_checker;
 typedef struct s_texture_map	t_texture_map;
 
-typedef t_color					(*t_pattern_at_fn)(t_pattern *, t_point *);
+typedef t_color					*(*t_pattern_at_fn)(t_pattern *, t_point *,
+													t_color *);
 typedef double					*(*t_uv_mapping)(t_point *, double *);
 
 typedef struct s_align_colors
@@ -60,7 +61,7 @@ typedef enum e_cube_face
 }	t_cube_face;
 
 t_pattern	*new_pattern(t_pattern *pattern);
-t_pattern	new_solid_pattern(t_color color);
+t_pattern	new_solid_pattern(t_color *color);
 void		set_pattern_transform(t_pattern *pattern, t_matrix *transform);
 // Patterns
 t_pattern	*new_stripe_pattern(t_pattern a, t_pattern b, t_pattern *pattern);

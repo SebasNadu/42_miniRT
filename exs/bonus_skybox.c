@@ -25,7 +25,7 @@ void	create_scene(t_world *world)
 	world->objs = malloc(2 * sizeof(t_shape));
 	world->objs_count = 2;
 	new_sphere(&sph);
-	sph.material.ambient = new_color(0, 0, 0);
+	new_color(0, 0, 0, &sph.material.ambient);
 	sph.material.diffuse = 0.4;
 	sph.material.specular = 0.6;
 	sph.material.shininess = 20;
@@ -35,7 +35,7 @@ void	create_scene(t_world *world)
 	new_cube(&skybox);
 	skybox.material.diffuse = 0;
 	skybox.material.specular = 0;
-	skybox.material.ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &skybox.material.ambient);
 	new_cubic_texture_map(&skybox.material.pattern, paths);
 	set_transform(&skybox, scaling(1000, 1000, 1000, &m[0]));
 	world->objs[0] = sph;
@@ -50,7 +50,7 @@ void	create_lights(t_world *world)
 	world->lights = malloc(1 * sizeof(t_light));
 	world->lights_count = 1;
 	new_point(0, 100, 0, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &world->lights[0]);
 }
 

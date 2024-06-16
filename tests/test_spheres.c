@@ -380,12 +380,12 @@ Test(spheres, a_sphere_may_be_assigned_a_material)
 	s.material.diffuse = 0.9;
 	s.material.specular = 0.9;
 	m = &s.material;
-	m->ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &m->ambient);
 	cr_assert(color_eq(s.material.ambient, m->ambient));
 	cr_assert(eq(dbl, s.material.diffuse, 0.9));
 	cr_assert(eq(dbl, s.material.specular, 0.9));
 	cr_assert(eq(dbl, s.material.shininess, 200.0));
-	cr_assert(color_eq(s.material.color, new_color(1.0, 1.0, 1.0)));
+	cr_assert(color_eq(s.material.color, (t_color){1.0, 1.0, 1.0}));
 }
 
 Test(intersections, hit_should_offset_the_intersection)

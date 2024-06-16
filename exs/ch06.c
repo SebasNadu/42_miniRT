@@ -80,14 +80,14 @@ void	set_params(t_params *params)
 	params->pixel_size = params->wall_size / HEIGHT;
 	params->half = params->wall_size * 0.5;
 	new_point(0, 0, -5, &params->ray_origin);
-	params->sphere_color = new_color(0.6, 0.1, 0.1);
+	new_color(0.6, 0.1, 0.1, &params->sphere_color);
 	params->bg_color = 0xFF000000;
 	new_sphere(&params->sphere);
 	params->sphere.material.color.g = 0.2;
 	new_point(-10, 10, -10, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &params->light);
-	params->sphere.material.ambient = new_color(0.1, 0.1, 0.1);
+	new_color(0.1, 0.1, 0.1, &params->sphere.material.ambient);
 	params->sphere.material.diffuse = 0.8;
 	params->sphere.material.specular = 0.8;
 }

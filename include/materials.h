@@ -33,6 +33,7 @@ typedef struct s_lighting_params
 	t_color		ambient;
 	t_color		diffuse;
 	t_color		specular;
+	t_color		tmp_color;
 }	t_lighting_params;
 
 t_material	*new_material(t_material *material);

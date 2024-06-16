@@ -48,7 +48,7 @@ static t_shape	*check_parents(t_shape *shape)
 
 	current = shape;
 	found = NULL;
-	default_color = new_color(1.0, 1.0, 1.0);
+	new_color(1.0, 1.0, 1.0, &default_color);
 	while (current->parent)
 	{
 		current = current->parent;
@@ -64,38 +64,44 @@ static t_shape	*check_parents(t_shape *shape)
 		return (shape);
 }
 
-t_color	shade_hit(t_world *world, t_comps *comps)
+t_color	*shade_hit(t_world *world, t_comps *comps, t_color *surface)
 {
 	int		i;
-	t_color	surface; 
 	t_shape	*parent;
+	t_color	tmp;
 
 	i = -1;
-	surface = new_color(0, 0, 0);
 	parent = check_parents(comps->obj);
 	while (++i < world->lights_count)
 	{
 		world->lights[i].intensity_ratio = intensity_at(
 				world, &comps->over_point, i);
 		if (world->lights[i].is_area_light == false)
-			surface = add_color(surface, lighting(parent,
-						&world->lights[i], &comps->over_point, &comps->view));
+		{
+			tmp = lighting(parent, &world->lights[i], &comps->over_point,
+					&comps->view);
+			add_color(surface, &tmp, surface);
+		}
 		else
-			surface = add_color(surface, area_lighting(parent,
-						&world->lights[i], &comps->over_point, &comps->view));
+		{
+			tmp = area_lighting(parent, &world->lights[i], &comps->over_point,
+					&comps->view);
+			add_color(surface, &tmp, surface);
+		}
 	}
-	return (reflec_and_refrac(world, comps, &surface));
+	return (reflec_and_refrac(world, comps, surface));
 }
 
-t_color	color_at(t_world *world, t_ray *ray)
+t_color	*color_at(t_world *world, t_ray *ray, t_color *color)
 {
 	t_hit	*intersect;
 	t_comps	comps;
 
+	*color = (t_color){0, 0, 0};
 	intersect_world(world, ray);
 	intersect = hit(world->xs);
 	if (!intersect)
-		return (new_color(0, 0, 0));
+		return (color);
 	comps = prepare_computations(intersect, ray, world->xs);
-	return (shade_hit(world, &comps));
+	return (shade_hit(world, &comps, color));
 }

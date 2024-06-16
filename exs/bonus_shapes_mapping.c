@@ -23,14 +23,14 @@ void	create_cubes(t_shape *objs)
 	t_shape		cubes[8];
 	t_matrix	m[2];
 
-	red = new_color(1, 0, 0);
-	yellow = new_color(1, 1, 0);
-	brown = new_color(1, 0.5, 0);
-	green = new_color(0, 1, 0);
-	cyan = new_color(0, 1, 1);
-	blue = new_color(0, 0, 1);
-	purple = new_color(1, 0, 1);
-	white = new_color(1, 1, 1);
+	new_color(1, 0, 0, &red);
+	new_color(1, 1, 0, &yellow);
+	new_color(1, 0.5, 0, &brown);
+	new_color(0, 1, 0, &green);
+	new_color(0, 1, 1, &cyan);
+	new_color(0, 0, 1, &blue);
+	new_color(1, 0, 1, &purple);
+	new_color(1, 1, 1, &white);
 	colors[0] = yellow;
 	colors[1] = cyan;
 	colors[2] = red;
@@ -69,7 +69,7 @@ void	create_cubes(t_shape *objs)
 	new_uv_align_check_pattern(&align_checkers[5], colors);
 	new_cube(&cubes[0]);
 	new_cube_align_check_pattern(&cubes[0].material.pattern, align_checkers);
-	cubes[0].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[0].material.ambient);
 	cubes[0].material.specular = 0;
 	cubes[0].material.diffuse = 0.8;
 	multiply_matrices(translation(-6, 4, 10, &m[0]), rotation_x(cos(0.7854), sin(0.7854), &m[1]), &m[0]);
@@ -77,7 +77,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[0], &m[0]);
 	new_cube(&cubes[1]);
 	new_cube_align_check_pattern(&cubes[1].material.pattern, align_checkers);
-	cubes[1].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[1].material.ambient);
 	cubes[1].material.specular = 0;
 	cubes[1].material.diffuse = 0.8;
 	multiply_matrices(translation(-2, 4, 10, &m[0]), rotation_x(cos(0.7854), sin(0.7854), &m[1]), &m[0]);
@@ -85,7 +85,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[1], &m[0]);
 	new_cube(&cubes[2]);
 	new_cube_align_check_pattern(&cubes[2].material.pattern, align_checkers);
-	cubes[2].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[2].material.ambient);
 	cubes[2].material.specular = 0;
 	cubes[2].material.diffuse = 0.8;
 	multiply_matrices(translation(2, 4, 10, &m[0]), rotation_x(cos(0.7854), sin(0.7854), &m[1]), &m[0]);
@@ -93,7 +93,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[2], &m[0]);
 	new_cube(&cubes[3]);
 	new_cube_align_check_pattern(&cubes[3].material.pattern, align_checkers);
-	cubes[3].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[2].material.ambient);
 	cubes[3].material.specular = 0;
 	cubes[3].material.diffuse = 0.8;
 	multiply_matrices(translation(6, 4, 10, &m[0]), rotation_x(cos(0.7854), sin(0.7854), &m[1]), &m[0]);
@@ -101,7 +101,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[3], &m[0]);
 	new_cube(&cubes[4]);
 	new_cube_align_check_pattern(&cubes[4].material.pattern, align_checkers);
-	cubes[4].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[3].material.ambient);
 	cubes[4].material.specular = 0;
 	cubes[4].material.diffuse = 0.8;
 	multiply_matrices(translation(-6, 0, 10, &m[0]), rotation_x(-cos(0.7854), -sin(0.7854), &m[1]), &m[0]);
@@ -109,7 +109,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[4], &m[0]);
 	new_cube(&cubes[5]);
 	new_cube_align_check_pattern(&cubes[5].material.pattern, align_checkers);
-	cubes[5].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[4].material.ambient);
 	cubes[5].material.specular = 0;
 	cubes[5].material.diffuse = 0.8;
 	multiply_matrices(translation(-2, 0, 10, &m[0]), rotation_x(-cos(0.7854), -sin(0.7854), &m[1]), &m[0]);
@@ -117,7 +117,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[5], &m[0]);
 	new_cube(&cubes[6]);
 	new_cube_align_check_pattern(&cubes[6].material.pattern, align_checkers);
-	cubes[6].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[5].material.ambient);
 	cubes[6].material.specular = 0;
 	cubes[6].material.diffuse = 0.8;
 	multiply_matrices(translation(2, 0, 10, &m[0]), rotation_x(-cos(0.7854), -sin(0.7854), &m[1]), &m[0]);
@@ -125,7 +125,7 @@ void	create_cubes(t_shape *objs)
 	set_transform(&cubes[6], &m[0]);
 	new_cube(&cubes[7]);
 	new_cube_align_check_pattern(&cubes[7].material.pattern, align_checkers);
-	cubes[7].material.ambient = new_color(0.2, 0.2, 0.2);
+	new_color(0.2, 0.2, 0.2, &cubes[6].material.ambient);
 	cubes[7].material.specular = 0;
 	cubes[7].material.diffuse = 0.8;
 	multiply_matrices(translation(6, 0, 10, &m[0]), rotation_x(-cos(0.7854), -sin(0.7854), &m[1]), &m[0]);
@@ -150,25 +150,26 @@ void	create_scene(t_world *world)
 	t_matrix	m[2];
 	t_color		colors[5];
 	t_shape		light;
+	t_color		tmp;
 
 	world->objs = malloc(13 * sizeof(t_shape));
 	world->objs_count = 13;
 	new_sphere(&s);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0)),
-		new_solid_pattern(new_color(1, 1, 1)), &s.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
+		new_solid_pattern(new_color(1, 1, 1, &tmp)), &s.material.pattern);
 	s.material.specular = 0.4;
 	s.material.shininess = 10;
 	s.material.diffuse = 0.6;
 	world->objs[0] = s;
 	new_plane(&floor);
-	colors[0] = new_color(1, 1, 1);
-	colors[1] = new_color(1, 0, 0);
-	colors[2] = new_color(1, 1, 0);
-	colors[3] = new_color(0, 1, 0);
-	colors[4] = new_color(0, 1, 1);
+	new_color(1, 1, 1, &colors[0]);
+	new_color(1, 0, 0, &colors[1]);
+	new_color(1, 1, 0, &colors[2]);
+	new_color(0, 1, 0, &colors[3]);
+	new_color(0, 1, 1, &colors[4]);
 	// new_uv_align_check_pattern(&floor.material.pattern, colors);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0)),
-		new_solid_pattern(new_color(1, 1, 1)), &floor.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
+		new_solid_pattern(new_color(1, 1, 1, &tmp)), &floor.material.pattern);
 	s.material.specular = 0;
 	s.material.diffuse = 0.9;
 	set_transform(&floor, translation(0, -2, 0, &floor.transform));
@@ -179,8 +180,8 @@ void	create_scene(t_world *world)
 	cyl.cyl.closed = true;
 	multiply_matrices(translation(-3, -0.5, 0, &m[0]), scaling(1, 3.1415, 1, &m[1]), &m[0]);
 	set_transform(&cyl, &m[0]);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0)),
-		new_solid_pattern(new_color(1, 1, 1)), &cyl.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
+		new_solid_pattern(new_color(1, 1, 1, &tmp)), &cyl.material.pattern);
 	s.material.specular = 0.6;
 	s.material.shininess = 15;
 	s.material.diffuse = 0.8;
@@ -191,16 +192,16 @@ void	create_scene(t_world *world)
 	cone.cone.closed = true;
 	multiply_matrices(translation(3, 0.5, 0, &m[0]), rotation_x(cos(-M_PI), sin(-M_PI), &m[1]), &m[0]);
 	set_transform(&cone, &m[0]);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0)),
-		new_solid_pattern(new_color(1, 1, 1)), &cone.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
+		new_solid_pattern(new_color(1, 1, 1, &tmp)), &cone.material.pattern);
 	s.material.specular = 0.6;
 	s.material.shininess = 15;
 	s.material.diffuse = 0.8;
 	world->objs[3] = cone;
 	create_cubes(world->objs + 4);
 	new_sphere(&light);
-	light.material.color = new_color(1.5, 1.5, 1.5);
-	light.material.ambient = new_color(1, 1, 1);
+	new_color(1.5, 1.5, 1.5, &light.material.color);
+	new_color(1, 1, 1, &light.material.ambient);
 	light.material.diffuse = 0;
 	light.material.specular = 0;
 	set_transform(&light, translation(0, 5, 2, &m[0]));
@@ -219,7 +220,7 @@ void	create_lights(t_world *world)
 	new_vector(0, 2, 2, &lp.full_vvec);
 	lp.usteps = 10;
 	lp.vsteps = 10;
-	lp.intensity = new_color(1.5, 1.5, 1.5);
+	new_color(1.5, 1.5, 1.5, &lp.intensity);
 	new_area_light(&lp, &world->lights[0]);
 }
 

@@ -11,7 +11,7 @@ t_world	*new_world(t_world *world)
 	world->objs_ext_count = 0;
 	world->lights_count = 0;
 	world->lights = NULL;
-	world->ambient = new_color(0.1, 0.1, 0.1);
+	new_color(0.1, 0.1, 0.1, &world->ambient);
 	world->remaining_recursion = MAX_RECURSION;
 	return (world);
 }

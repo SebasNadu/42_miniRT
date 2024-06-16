@@ -19,15 +19,15 @@ void	create_scene(t_world *world)
 	world->objs = malloc(4 * sizeof(t_shape));
 	world->objs_count = 4;
 	new_sphere(&light);
-	light.material.color = new_color(1.5, 1.5, 1.5);
-	light.material.ambient = new_color(1, 1, 1);
+	new_color(1.5, 1.5, 1.5, &light.material.color);
+	new_color(1, 1, 1, &light.material.ambient);
 	light.material.diffuse = 0;
 	light.material.specular = 0;
 	light.cast_shadow = false;
 	set_transform(&light, translation(-100, 100, -100, &m[0]));
 	new_plane(&plane);
-	plane.material.color = new_color(1, 1, 1);
-	plane.material.ambient = new_color(0, 0, 0);
+	new_color(1, 1, 1, &plane.material.color);
+	new_color(0, 0, 0, &plane.material.ambient);
 	plane.material.diffuse = 0.1;
 	plane.material.specular = 0;
 	plane.material.reflective = 0.4;
@@ -35,8 +35,8 @@ void	create_scene(t_world *world)
 	cyl.cyl.min = 0;
 	cyl.cyl.max = 0.1;
 	cyl.cyl.closed = true;
-	cyl.material.color = new_color(1, 1, 1);
-	cyl.material.ambient = new_color(0, 0, 0);
+	new_color(1, 1, 1, &cyl.material.color);
+	new_color(0, 0, 0, &cyl.material.ambient);
 	cyl.material.diffuse = 0.2;
 	cyl.material.specular = 0;
 	cyl.material.reflective = 0.1;
@@ -61,7 +61,7 @@ void	create_lights(t_world *world)
 	world->lights = malloc(1 * sizeof(t_light));
 	world->lights_count = 1;
 	new_point(-100, 100, -100, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &world->lights[0]);
 }
 

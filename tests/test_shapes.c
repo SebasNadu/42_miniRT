@@ -54,7 +54,7 @@ Test(shapes, assigning_a_material)
 
 	new_shape(&s);
 	new_material(&expected);
-	expected.ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &expected.ambient);
 	s.material = expected;
 
 	cr_assert(epsilon_eq(s.material.color.r, expected.color.r, EPSILON));

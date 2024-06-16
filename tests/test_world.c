@@ -17,7 +17,7 @@ Test(world, the_default_world)
 	t_point	p;
 
 	new_point(-10, 10, -10, &p);
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(&p, &c, &l);
 	w = default_world();
 	cr_assert(eq(dbl, w.lights[0].position.x, l.position.x));
@@ -127,8 +127,8 @@ Test(world, shading_an_intersection)
 	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
 	i = intersection(4, &w.objs[0]);
 	comps = prepare_computations(i, &r, i);
-	c = shade_hit(&w, &comps);
-	expected = new_color(0.38066, 0.47583, 0.2855);
+	shade_hit(&w, &comps, &c);
+	new_color(0.38066, 0.47583, 0.2855, &expected);
 	cr_assert(epsilon_eq(dbl, c.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.g, expected.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.b, expected.b, EPSILON));
@@ -146,13 +146,13 @@ Test(world, shading_an_intersection_from_the_inside)
 	t_vector	v;
 
 	w = default_world();
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(new_point(0, 0.25, 0, &p), &c, &w.lights[0]);
 	new_ray(new_point(0, 0, 0, &p), new_vector(0, 0, 1, &v), &r);
 	i = intersection(0.5, &w.objs[1]);
 	comps = prepare_computations(i, &r, i);
-	c = shade_hit(&w, &comps);
-	expected = new_color(0.90498, 0.90498, 0.90498);
+	shade_hit(&w, &comps, &c);
+	new_color(0.90498, 0.90498, 0.90498, &expected);
 	(void)c;
 	(void)expected;
 	// TODO: fix this test
@@ -172,8 +172,8 @@ Test(world, color_for_missed_ray)
 
 	w = default_world();
 	new_ray(new_point(0, 0, -5, &p), new_vector(0, 1, 0, &v), &r);
-	c = color_at(&w, &r);
-	expected = new_color(0, 0, 0);
+	color_at(&w, &r, &c);
+	new_color(0, 0, 0, &expected);
 	cr_assert(epsilon_eq(dbl, c.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.g, expected.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.b, expected.b, EPSILON));
@@ -190,8 +190,8 @@ Test(world, color_for_hit_ray)
 
 	w = default_world();
 	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
-	c = color_at(&w, &r);
-	expected = new_color(0.38066, 0.47583, 0.2855);
+	color_at(&w, &r, &c);
+	new_color(0.38066, 0.47583, 0.2855, &expected);
 	cr_assert(epsilon_eq(dbl, c.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.g, expected.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.b, expected.b, EPSILON));
@@ -210,11 +210,11 @@ Test(world, color_with_intersection_behind_ray)
 
 	w = default_world();
 	outer = &w.objs[0];
-	outer->material.ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &outer->material.ambient);
 	inner = &w.objs[1];
-	inner->material.ambient = new_color(1, 1, 1);
+	new_color(1, 1, 1, &inner->material.ambient);
 	new_ray(new_point(0, 0, 0.75, &p), new_vector(0, 0, -1, &v), &r);
-	c = color_at(&w, &r);
+	color_at(&w, &r, &c);
 	expected = inner->material.color;
 	cr_assert(epsilon_eq(dbl, c.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, c.g, expected.g, EPSILON));
@@ -348,30 +348,30 @@ Test(world, lighting_fn_uses_light_intesity_to_attenuate_color)
 	t_color		c;
 
 	w = default_world();
-	c = new_color(1, 1, 1);
+	new_color(1, 1, 1, &c);
 	new_light(new_point(0, 0, -10, &p), &c, &w.lights[0]);
-	w.objs[0].material.ambient = new_color(0.1, 0.1, 0.1);
+	new_color(0.1, 0.1, 0.1, &w.objs[0].material.ambient);
 	w.objs[0].material.diffuse = 0.9;
 	w.objs[0].material.specular = 0;
-	w.objs[0].material.color = new_color(1, 1, 1);
+	new_color(1, 1, 1, &w.objs[0].material.color);
 	new_point(0, 0, -1, &p);
 	new_vector(0, 0, -1, &eye.eye_v);
 	new_vector(0, 0, -1, &eye.normal_v);
 	w.lights[0].intensity_ratio = 1.0;
 	result = lighting(&w.objs[0], &w.lights[0], &p, &eye);
-	expected = new_color(1, 1, 1);
+	new_color(1, 1, 1, &expected);
 	cr_assert(epsilon_eq(dbl, result.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.g, expected.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.b, expected.b, EPSILON));
 	w.lights[0].intensity_ratio = 0.5;
 	result = lighting(&w.objs[0], &w.lights[0], &p, &eye);
-	expected = new_color(0.55, 0.55, 0.55);
+	new_color(0.55, 0.55, 0.55, &expected);
 	cr_assert(epsilon_eq(dbl, result.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.g, expected.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.b, expected.b, EPSILON));
 	w.lights[0].intensity_ratio = 0.0;
 	result = lighting(&w.objs[0], &w.lights[0], &p, &eye);
-	expected = new_color(0.1, 0.1, 0.1);
+	new_color(0.1, 0.1, 0.1, &expected);
 	cr_assert(epsilon_eq(dbl, result.r, expected.r, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.g, expected.g, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.b, expected.b, EPSILON));
@@ -387,7 +387,7 @@ Test(world, creating_an_area_light)
 	new_vector(0, 0, 1, &lp.full_vvec);
 	lp.usteps = 4;
 	lp.vsteps = 2;
-	lp.intensity = new_color(1, 1, 1);
+	new_color(1, 1, 1, &lp.intensity);
 	new_area_light(&lp, &l);
 	cr_assert(eq(dbl, l.corner.x, 0));
 	cr_assert(eq(dbl, l.corner.y, 0));
@@ -400,7 +400,7 @@ Test(world, creating_an_area_light)
 	cr_assert(eq(dbl, l.vvec.y, 0));
 	cr_assert(eq(dbl, l.vvec.z, 0.5));
 	cr_assert(eq(int, l.vsteps, 2));
-	cr_assert(eq(int, l.samples, 8));
+	cr_assert(eq(int, l.inverse_samples, 0.125));
 	cr_assert(eq(dbl, l.position.x, 1));
 	cr_assert(eq(dbl, l.position.y, 0));
 	cr_assert(eq(dbl, l.position.z, 0.5));
@@ -528,7 +528,7 @@ Test(lights, finding_a_single_point_on_a_jittered_area_light)
 	new_vector(0, 0, 1, &lp.full_vvec);
 	lp.usteps = 4;
 	lp.vsteps = 2;
-	lp.intensity = new_color(1, 1, 1);
+	new_color(1, 1, 1, &lp.intensity);
 	new_area_light(&lp, &l);
 	point_on_light(&l, 3, 1, &p1);
 	point_on_light(&l, 3, 1, &p2);

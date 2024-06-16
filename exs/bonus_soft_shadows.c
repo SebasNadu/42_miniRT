@@ -21,27 +21,27 @@ void	create_scene(t_world *world)
 	world->objs = malloc(4 * sizeof(t_shape));
 	world->objs_count = 4;
 	new_cube(&c);
-	c.material.color = new_color(1.5, 1.5, 1.5);
-	c.material.ambient = new_color(1, 1, 1);
+	new_color(1.5, 1.5, 1.5, &c.material.color);
+	new_color(1, 1, 1, &c.material.ambient); 
 	c.material.diffuse = 0;
 	c.material.specular = 0;
 	multiply_matrices(translation(0, 3, 4, &m[0]), scaling(1, 1, 0.01, &m[1]), &m[0]);
 	set_transform(&c, &m[0]);
 	c.cast_shadow = false;
 	new_plane(&p);
-	p.material.color = new_color(1, 1, 1);
-	p.material.ambient = new_color(0.025, 0.025, 0.025);
+	new_color(1, 1, 1, &p.material.color);
+	new_color(0.025, 0.025, 0.025, &p.material.ambient);
 	p.material.diffuse = 0.67;
 	p.material.specular = 0;
 	new_sphere(&s1);
-	s1.material.color = new_color(1, 0, 0);
+	new_color(1, 0, 0, &s1.material.color);
 	s1.material.specular = 0;
 	s1.material.diffuse = 0.6;
 	s1.material.reflective = 0.3;
 	multiply_matrices(translation(0.5, 0.5, 0, &m[1]), scaling(0.5, 0.5, 0.5, &m[0]), &m[1]);
 	set_transform(&s1, &m[1]);
 	new_sphere(&s2);
-	s2.material.color = new_color(0.5, 0.5, 1);
+	new_color(0.5, 0.5, 1, &s2.material.color);
 	s2.material.specular = 0;
 	s2.material.diffuse = 0.6;
 	s2.material.reflective = 0.3;
@@ -70,7 +70,7 @@ void	create_lights(t_world *world)
 	new_vector(0, 2, 0, &lp.full_vvec);
 	lp.usteps = 10;
 	lp.vsteps = 10;
-	lp.intensity = new_color(1.5, 1.5, 1.5);
+	new_color(1.5, 1.5, 1.5, &lp.intensity);
 	new_area_light(&lp, &world->lights[0]);
 }
 

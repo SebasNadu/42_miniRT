@@ -1,9 +1,6 @@
 #ifndef TEST_H
 # define TEST_H
 
-# define BLACK new_color(0, 0, 0)
-# define WHITE new_color(1, 1, 1)
-
 # include <criterion/criterion.h>
 # include <criterion/new/assert.h>
 

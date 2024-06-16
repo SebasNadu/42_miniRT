@@ -1,8 +1,9 @@
 #include "patterns.h"
 
-static t_color	uv_align_check_at(t_pattern *pattern, t_point *shape_point);
-static t_color	uv_cube_align_check_map_at(t_pattern *pattern,
-					t_point *shape_point);
+static t_color	*uv_align_check_at(t_pattern *pattern, t_point *shape_point,
+					t_color *out);
+static t_color	*uv_cube_align_check_map_at(t_pattern *pattern,
+					t_point *shape_point, t_color *out);
 
 t_pattern	*new_uv_align_check_pattern(t_pattern *pattern, t_color color[5])
 {
@@ -18,7 +19,8 @@ t_pattern	*new_uv_align_check_pattern(t_pattern *pattern, t_color color[5])
 	return (pattern);
 }
 
-t_pattern	*new_cube_align_check_pattern(t_pattern *pattern, t_pattern faces[6])
+t_pattern	*new_cube_align_check_pattern(t_pattern *pattern,
+		t_pattern faces[6])
 {
 	if (!pattern)
 		return (NULL);
@@ -36,29 +38,28 @@ t_pattern	*new_cube_align_check_pattern(t_pattern *pattern, t_pattern faces[6])
 	return (pattern);
 }
 
-static t_color	uv_align_check_at(t_pattern *pattern, t_point *shape_point)
+static t_color	*uv_align_check_at(t_pattern *pattern, t_point *shape_point,
+					t_color *out)
 {
 	t_point		pattern_point;
 	double		uv[2];
-	t_color		color;
 
 	multiply_matrix_by_tuple(&pattern->inverse, shape_point, &pattern_point);
 	pattern->texture_map.uv_mapping_fn(&pattern_point, uv);
-	color = uv_pattern_color_at(&pattern->align_colors, &uv[0], &uv[1]);
-	return (color);
+	*out = uv_pattern_color_at(&pattern->align_colors, &uv[0], &uv[1]);
+	return (out);
 }
 
-static t_color	uv_cube_align_check_map_at(t_pattern *pattern,
-					t_point *shape_point)
+static t_color	*uv_cube_align_check_map_at(t_pattern *pattern,
+					t_point *shape_point, t_color *out)
 {
 	t_point		pattern_point;
 	double		face_uv[3];
-	t_color		color;
 
 	multiply_matrix_by_tuple(&pattern->inverse, shape_point, &pattern_point);
 	face_uv[0] = face_from_point(&pattern_point);
 	pattern->texture_map.uv_mapping_fn(&pattern_point, face_uv);
-	color = uv_pattern_color_at(&pattern->a[(int)face_uv[0]]
+	*out = uv_pattern_color_at(&pattern->a[(int)face_uv[0]]
 			.align_colors, &face_uv[1], &face_uv[2]);
-	return (color);
+	return (out);
 }

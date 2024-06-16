@@ -53,7 +53,7 @@ static void	render_projectile_motion(t_canvas *canvas)
 	t_environment	e;
 	t_point			t[2];
 
-	c = new_color(1, 0, 0);
+	new_color(1, 0, 0, &c);
 	p = projectile(new_point(0, 0, 0, &t[0]), multiply(
 				normalize(new_vector(1, 1.8, 0, &t[1]), &t[1]), 11.25, &t[1]));
 	e = environment(new_vector(0, -0.1, 0, &t[0]),

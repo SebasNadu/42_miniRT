@@ -17,9 +17,9 @@ Test(canvas, write_a_pixel)
 	t_color		c;
 
 	new_canvas(&canvas, 10, 20, "Test");
-	c = new_color(1, 0, 0);
+	new_color(1, 0, 0, &c);
 	write_pixel(canvas.img, 2, 3, &c);
-	c = read_pixel(canvas.img, 2, 3);
+	read_pixel(canvas.img, 2, 3, &c);
 	cr_assert(epsilon_eq(flt, c.r, 1, EPSILON));
 	cr_assert(epsilon_eq(flt, c.g, 0, EPSILON));
 	cr_assert(epsilon_eq(flt, c.b, 0, EPSILON));
@@ -33,11 +33,11 @@ Test(canvas, save_canvas_to_ppm)
 	t_color		c;
 
 	new_canvas(&canvas, 10, 20, "Test");
-	c = new_color(1, 0, 0);
+	new_color(1, 0, 0, &c);
 	write_pixel(canvas.img, 2, 3, &c);
-	c = new_color(0, 1, 0);
+	new_color(0, 1, 0, &c);
 	write_pixel(canvas.img, 4, 5, &c);
-	c = new_color(0, 0, 1);
+	new_color(0, 0, 1, &c);
 	write_pixel(canvas.img, 6, 7, &c);
 	canvas_to_ppm(&canvas, "test_canvas");
 	mlx_delete_image(canvas.mlx, canvas.img);
