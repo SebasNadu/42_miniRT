@@ -5,7 +5,8 @@ static t_color	*checkers_at(t_pattern *pattern, t_point *shape_point,
 static t_color	*uv_checkers_at(t_pattern *pattern, t_point *shape_point,
 					t_color *out);
 
-t_pattern	*new_checkers_pattern(t_pattern a, t_pattern b, t_pattern *pattern)
+t_pattern	*new_checkers_pattern(t_pattern *a, t_pattern *b,
+		t_pattern *pattern)
 {
 	if (!pattern)
 		return (NULL);
@@ -15,14 +16,14 @@ t_pattern	*new_checkers_pattern(t_pattern a, t_pattern b, t_pattern *pattern)
 	pattern->b = malloc(sizeof(t_pattern));
 	if (!pattern->b)
 		return (pattern);
-	*pattern->a = a;
-	*pattern->b = b;
+	*pattern->a = *a;
+	*pattern->b = *b;
 	pattern->pattern_at = checkers_at;
 	pattern->has_pattern = true;
 	return (pattern);
 }
 
-t_pattern	*new_uv_checkers_pattern(t_pattern a, t_pattern b,
+t_pattern	*new_uv_checkers_pattern(t_pattern *a, t_pattern *b,
 				t_pattern *pattern)
 {
 	if (!pattern)
@@ -33,8 +34,8 @@ t_pattern	*new_uv_checkers_pattern(t_pattern a, t_pattern b,
 	pattern->b = malloc(sizeof(t_pattern));
 	if (!pattern->b)
 		return (pattern);
-	*pattern->a = a;
-	*pattern->b = b;
+	*pattern->a = *a;
+	*pattern->b = *b;
 	pattern->pattern_at = uv_checkers_at;
 	pattern->has_pattern = true;
 	pattern->texture_map.uv_pattern.a = pattern->a;

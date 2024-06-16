@@ -9,8 +9,8 @@ Test(patterns, checker_pattern_in_2D)
 	t_pattern black;
 	t_pattern white;
 
-	black = new_solid_pattern(new_color(0, 0, 0, &expected));
-	white = new_solid_pattern(new_color(1, 1, 1, &expected));
+	new_solid_pattern(new_color(0, 0, 0, &expected), &black);
+	new_solid_pattern(new_color(1, 1, 1, &expected), &white);
 	checkers = uv_checkers(2, 2, &black, &white);
 	uv[0] = 0.0;
 	uv[1] = 0.0;
@@ -91,11 +91,12 @@ Test(patterns, using_texture_map_pattern_with_spherical_map)
 	t_point		p;
 	t_color		black;
 	t_color		white;
+	t_pattern	tmp[2];
 
 	new_color(0, 0, 0, &black);
 	new_color(1, 1, 1, &white);
 	new_pattern(&pattern);
-	new_uv_checkers_pattern(new_solid_pattern(&black), new_solid_pattern(&white), &pattern);
+	new_uv_checkers_pattern(new_solid_pattern(&black, &tmp[0]), new_solid_pattern(&white, &tmp[1]), &pattern);
 	pattern.texture_map.uv_pattern = uv_checkers(16, 8, pattern.a, pattern.b);
 	texture_map(&pattern, &pattern.texture_map.uv_pattern, spherical_map);
 	new_point(0.4315, 0.4670, 0.7719, &p);

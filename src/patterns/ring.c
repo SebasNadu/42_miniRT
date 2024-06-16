@@ -3,7 +3,7 @@
 static t_color	*ring_at(t_pattern *pattern, t_point *shape_point,
 					t_color *out);
 
-t_pattern	*new_ring_pattern(t_pattern a, t_pattern b, t_pattern *pattern)
+t_pattern	*new_ring_pattern(t_pattern *a, t_pattern *b, t_pattern *pattern)
 {
 	if (!pattern)
 		return (NULL);
@@ -16,8 +16,8 @@ t_pattern	*new_ring_pattern(t_pattern a, t_pattern b, t_pattern *pattern)
 		free(pattern->a);
 		return (pattern);
 	}
-	*pattern->a = a;
-	*pattern->b = b;
+	*pattern->a = *a;
+	*pattern->b = *b;
 	pattern->pattern_at = ring_at;
 	pattern->has_pattern = true;
 	return (pattern);

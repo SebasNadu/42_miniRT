@@ -165,6 +165,7 @@ void	create_scene(t_world *world)
 	t_shape		*right_wall;
 	t_matrix	m[2];
 	t_color		c;
+	t_pattern	tmp[2];
 
 	world->objs = malloc(2 * sizeof(t_shape));
 	world->objs_count = 2;
@@ -191,8 +192,8 @@ void	create_scene(t_world *world)
 	new_plane(floor);
 	floor->material.reflective = 0.3;
 	new_color(1, 1, 1, &floor->material.color);
-	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &floor->material.pattern);
+	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c), &tmp[0]),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c), &tmp[1]), &floor->material.pattern);
 	set_transform(floor, translation(0, -1, 0, &m[0]));
 	left_wall = malloc(1 * sizeof(t_shape));
 	right_wall = malloc(1 * sizeof(t_shape));
@@ -200,12 +201,12 @@ void	create_scene(t_world *world)
 	new_plane(right_wall);
 	new_color(1, 1, 1, &left_wall->material.color);
 	left_wall->material.reflective = 0.3;
-	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &left_wall->material.pattern);
+	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c), &tmp[0]),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c), &tmp[1]), &left_wall->material.pattern);
 	new_color(1, 1, 1, &right_wall->material.color);
 	right_wall->material.reflective = 0.3;
-	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &right_wall->material.pattern);
+	new_checkers_pattern(new_solid_pattern(new_color(0.7, 0.7, 0.7, &c), &tmp[0]),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c), &tmp[1]), &right_wall->material.pattern);
 	multiply_matrices(translation(15, 0, 0, &m[0]),
 		rotation_y(cos(M_PI_4), sin(M_PI_4), &m[1]), &m[0]);
 	multiply_matrices(&m[0], rotation_x(cos(M_PI_2), sin(M_PI_2), &m[1]), &m[0]);

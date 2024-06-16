@@ -12,8 +12,8 @@ Test(patterns, create_stripe_feature)
 	new_color(0, 0, 0, &black);
 	pattern.a = malloc(sizeof(t_pattern));
 	pattern.b = malloc(sizeof(t_pattern));
-	*pattern.a = new_solid_pattern(&white);
-	*pattern.b = new_solid_pattern(&black);
+	new_solid_pattern(&white, pattern.a);
+	new_solid_pattern(&black, pattern.b);
 	new_point(0, 0, 0, &p);
 
 	pattern.a->pattern_at(pattern.a, &p, &res);
@@ -31,6 +31,7 @@ Test(patterns, create_stripe_feature)
 Test(patterns, new_pattern_constant_in_y_1)
 {
 	t_pattern	pattern;
+	t_pattern	tmp[2];
 	t_color		res;
 	t_tuple		p;
 	t_color		expected;
@@ -40,8 +41,8 @@ Test(patterns, new_pattern_constant_in_y_1)
 	new_point(0, 0, 0, &p);
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -60,12 +61,13 @@ Test(patterns, new_pattern_constant_in_y_2)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_point(0, 1, 0, &p);
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -84,12 +86,13 @@ Test(patterns, new_pattern_constant_in_y_3)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(0, 2, 0, &p);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -109,12 +112,13 @@ Test(patterns, new_pattern_constant_in_z_1)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(0, 0, 0, &p);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -133,13 +137,14 @@ Test(patterns, new_pattern_constant_in_z_2)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(0, 0, 1, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -158,13 +163,14 @@ Test(patterns, new_pattern_constant_in_z_3)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(0, 0, 2, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -184,13 +190,14 @@ Test(patterns, new_pattern_constant_in_x_1)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(0, 0, 0, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -209,12 +216,13 @@ Test(patterns, new_pattern_constant_in_x_2)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(0.9, 0, 0, &p);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -233,13 +241,14 @@ Test(patterns, new_pattern_constant_in_x_3)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(1, 0, 0, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = black;
 	
@@ -258,13 +267,14 @@ Test(patterns, new_pattern_constant_in_x_4)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(-0.1, 0, 0, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = black;
 	
@@ -283,13 +293,14 @@ Test(patterns, new_pattern_constant_in_x_5)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(-1, 0, 0, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = black;
 	
@@ -308,13 +319,14 @@ Test(patterns, new_pattern_constant_in_x_6)
 	t_color		expected;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_point(-1.1, 0, 0, &p);
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
 	
@@ -336,13 +348,14 @@ Test(patterns, lighting_with_stripe_pattern_applied)
 	t_point		p;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_sphere(&shape);
 	new_material(&m);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &m.pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &m.pattern);
 	new_color(1, 1, 1, &m.ambient);
 	m.diffuse = 0;
 	m.specular = 0;
@@ -379,14 +392,15 @@ Test(patterns, stripes_with_object_transformation)
 	t_matrix	m;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_sphere(&object);
 	set_transform(&object, scaling(2, 2, 2, &m));
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-	new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	new_point(1.5, 0, 0, &p);
 	pattern_at_shape(&pattern, &object, &p, &res);
 	expected = white;
@@ -407,13 +421,14 @@ Test(patterns, stripes_with_pattern_transformation)
 	t_matrix	m;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_sphere(&object); 
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	set_pattern_transform(&pattern, scaling(2, 2, 2, &m));
 	new_point(1.5, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
@@ -436,14 +451,15 @@ Test(patterns, stripes_with_object_and_pattern_transformation)
 	t_matrix	m;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_sphere(&object); 
 	set_transform(&object, scaling(2, 2, 2, &m));
 	new_pattern(&pattern);
-	new_stripe_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_stripe_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	set_pattern_transform(&pattern, translation(0.5, 0, 0, &m));
 	new_point(2.5, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
@@ -464,12 +480,13 @@ Test(patterns, gradient_linear_interpolation)
 	t_point		p;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_pattern(&pattern);
-	new_gradient_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_gradient_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	new_point(0, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
@@ -506,12 +523,13 @@ Test(patterns, ring_pattern)
 	t_point		p;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_pattern(&pattern);
-	new_ring_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_ring_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	new_point(0, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
@@ -548,12 +566,13 @@ Test(patterns, checkers_should_repeat_in_x)
 	t_point		p;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_pattern(&pattern);
-	new_checkers_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_checkers_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	new_point(0, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
@@ -584,12 +603,13 @@ Test(patterns, checkers_should_repeat_in_y)
 	t_point		p;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_pattern(&pattern);
-	new_checkers_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_checkers_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	new_point(0, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;
@@ -620,12 +640,13 @@ Test(patterns, checkers_should_repeat_in_z)
 	t_point		p;
 	t_color		white;
 	t_color		black;
+	t_pattern	tmp[2];
 
 	new_color(1, 1, 1, &white);
 	new_color(0, 0, 0, &black);
 	new_pattern(&pattern);
-	new_checkers_pattern(new_solid_pattern(&white),
-		new_solid_pattern(&black), &pattern);
+	new_checkers_pattern(new_solid_pattern(&white, &tmp[0]),
+		new_solid_pattern(&black, &tmp[1]), &pattern);
 	new_point(0, 0, 0, &p);
 	pattern.pattern_at(&pattern, &p, &res);
 	expected = white;

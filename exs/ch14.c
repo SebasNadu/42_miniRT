@@ -122,6 +122,7 @@ void	create_scene2(t_world *world)
 	t_shape		*hexagon;
 	t_matrix	m;
 	t_color		c;
+	t_pattern tmp[2];  
 
 	world->objs = malloc(1 * sizeof(t_shape));
 	world->objs_count = 1;
@@ -136,8 +137,8 @@ void	create_scene2(t_world *world)
 		add_child(hexagon, &sides[i]);
 	}
 	new_radial_gradient_pattern(
-		new_solid_pattern(new_color(0.5, 0.7, 0.9, &c)),
-		new_solid_pattern(new_color(0.6, 0.3, 0.1, &c)), &hexagon->material.pattern);
+		new_solid_pattern(new_color(0.5, 0.7, 0.9, &c), &tmp[0]),
+		new_solid_pattern(new_color(0.6, 0.3, 0.1, &c), &tmp[1]), &hexagon->material.pattern);
 	set_pattern_transform(&hexagon->material.pattern,
 		scaling(0.33, 0.33, 0.33, &m));
 }

@@ -151,12 +151,13 @@ void	create_scene(t_world *world)
 	t_color		colors[5];
 	t_shape		light;
 	t_color		tmp;
+	t_pattern p[2];  
 
 	world->objs = malloc(13 * sizeof(t_shape));
 	world->objs_count = 13;
 	new_sphere(&s);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
-		new_solid_pattern(new_color(1, 1, 1, &tmp)), &s.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp), &p[0]),
+		new_solid_pattern(new_color(1, 1, 1, &tmp), &p[1]), &s.material.pattern);
 	s.material.specular = 0.4;
 	s.material.shininess = 10;
 	s.material.diffuse = 0.6;
@@ -168,8 +169,8 @@ void	create_scene(t_world *world)
 	new_color(0, 1, 0, &colors[3]);
 	new_color(0, 1, 1, &colors[4]);
 	// new_uv_align_check_pattern(&floor.material.pattern, colors);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
-		new_solid_pattern(new_color(1, 1, 1, &tmp)), &floor.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp), &p[0]),
+		new_solid_pattern(new_color(1, 1, 1, &tmp), &p[1]), &floor.material.pattern);
 	s.material.specular = 0;
 	s.material.diffuse = 0.9;
 	set_transform(&floor, translation(0, -2, 0, &floor.transform));
@@ -180,8 +181,8 @@ void	create_scene(t_world *world)
 	cyl.cyl.closed = true;
 	multiply_matrices(translation(-3, -0.5, 0, &m[0]), scaling(1, 3.1415, 1, &m[1]), &m[0]);
 	set_transform(&cyl, &m[0]);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
-		new_solid_pattern(new_color(1, 1, 1, &tmp)), &cyl.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp), &p[0]),
+		new_solid_pattern(new_color(1, 1, 1, &tmp), &p[1]), &cyl.material.pattern);
 	s.material.specular = 0.6;
 	s.material.shininess = 15;
 	s.material.diffuse = 0.8;
@@ -192,8 +193,8 @@ void	create_scene(t_world *world)
 	cone.cone.closed = true;
 	multiply_matrices(translation(3, 0.5, 0, &m[0]), rotation_x(cos(-M_PI), sin(-M_PI), &m[1]), &m[0]);
 	set_transform(&cone, &m[0]);
-	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp)),
-		new_solid_pattern(new_color(1, 1, 1, &tmp)), &cone.material.pattern);
+	new_uv_checkers_pattern(new_solid_pattern(new_color(0, 0.5, 0, &tmp), &p[0]),
+		new_solid_pattern(new_color(1, 1, 1, &tmp), &p[1]), &cone.material.pattern);
 	s.material.specular = 0.6;
 	s.material.shininess = 15;
 	s.material.diffuse = 0.8;

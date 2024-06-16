@@ -4,14 +4,12 @@
 static t_color	*solid_at(t_pattern *pattern, t_point *shape_point,
 					t_color *out);
 
-t_pattern	new_solid_pattern(t_color *color)
+t_pattern	*new_solid_pattern(t_color *color, t_pattern *solid)
 {
-	t_pattern	solid;
-
-	new_pattern(&solid);
-	solid.color = *color;
-	solid.pattern_at = solid_at;
-	solid.has_pattern = true;
+	new_pattern(solid);
+	solid->color = *color;
+	solid->pattern_at = solid_at;
+	solid->has_pattern = true;
 	return (solid);
 }
 

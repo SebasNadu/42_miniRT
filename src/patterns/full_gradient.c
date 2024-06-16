@@ -3,7 +3,7 @@
 static t_color	*full_gradient_at(t_pattern *pattern, t_point *shape_point,
 					t_color *out);
 
-t_pattern	*new_full_gradient_pattern(t_pattern a, t_pattern b,
+t_pattern	*new_full_gradient_pattern(t_pattern *a, t_pattern *b,
 				t_pattern *pattern)
 {
 	if (!pattern)
@@ -17,8 +17,8 @@ t_pattern	*new_full_gradient_pattern(t_pattern a, t_pattern b,
 		free(pattern->a);
 		return (pattern);
 	}
-	*pattern->a = a;
-	*pattern->b = b;
+	*pattern->a = *a;
+	*pattern->b = *b;
 	pattern->pattern_at = full_gradient_at;
 	pattern->has_pattern = true;
 	return (pattern);

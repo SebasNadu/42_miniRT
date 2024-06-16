@@ -41,6 +41,7 @@ void	create_spheres(t_world *world)
 	t_shape		behind;
 	t_matrix	m[2];
 	t_color		tmp;
+	t_pattern p[2];
 
 	new_sphere(&middle);
 	new_color(0.9, 0.9, 0.9, &middle.material.color);
@@ -61,8 +62,8 @@ void	create_spheres(t_world *world)
 	new_sphere(&left);
 	left.material.reflective = 0.9;
 	new_color(0, 0, 0, &left.material.color);
-	new_full_gradient_pattern(new_solid_pattern(new_color(1, 0, 0, &tmp)),
-		new_solid_pattern(&left.material.color), &left.material.pattern);
+	new_full_gradient_pattern(new_solid_pattern(new_color(1, 0, 0, &tmp), &p[0]),
+		new_solid_pattern(&left.material.color, &p[1]), &left.material.pattern);
 	multiply_matrices(translation(-2, -0.2, -1, &m[0]),
 		scaling(0.33, 0.33, 0.33, &m[1]), &m[0]);
 	set_transform(&left, &m[0]);

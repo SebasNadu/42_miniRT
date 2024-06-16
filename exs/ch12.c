@@ -22,11 +22,12 @@ void	create_scene(t_world *world)
 	t_shape		cube;
 	t_matrix	m[2];
 	t_color		c;
+	t_pattern tmp[2];
 
 	new_cube(&floor);
 	new_checkers_pattern(
-		new_solid_pattern(new_color(0.1, 0.1, 0.1, &c)),
-		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c)), &floor.material.pattern);
+		new_solid_pattern(new_color(0.1, 0.1, 0.1, &c), &tmp[0]),
+		new_solid_pattern(new_color(0.9, 0.9, 0.9, &c), &tmp[1]), &floor.material.pattern);
 	floor.material.reflective = 0.5;
 	set_pattern_transform(&floor.material.pattern, scaling(0.2, 0.2, 0.2, &m[0]));
 	set_transform(&floor, scaling(10, 0.01, 10, &m[0]));
@@ -35,7 +36,7 @@ void	create_scene(t_world *world)
 	multiply_matrices(translation(0, 5, 0, &m[0]), scaling(10, 0.01, 10, &m[1]), &m[0]);
 	set_transform(&ceiling, &m[0]);
 	new_cube(&backwall);
-	backwall.material.pattern = new_solid_pattern(new_color(0.6, 0.1, 0.05, &c));
+	new_solid_pattern(new_color(0.6, 0.1, 0.05, &c), &backwall.material.pattern);
 	backwall.material.reflective = 0.2;
 	multiply_matrices(translation(0, 0, 4, &m[0]), scaling(10, 10, 0.01, &m[1]), &m[0]);
 	set_transform(&backwall, &m[0]);
