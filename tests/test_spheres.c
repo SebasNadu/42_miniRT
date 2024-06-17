@@ -5,9 +5,11 @@ Test(spheres, a_ray_intersects_a_sphere_at_two_points)
 	t_ray					r;
 	t_shape				s;
 	t_hit					*xs;
+	t_point				p;
+	t_vector			v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 0, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 2));
@@ -20,9 +22,11 @@ Test(spheres, a_ray_intersects_a_sphere_at_a_tangent)
 	t_ray					r;
 	t_shape				s;
 	t_hit					*xs;
+	t_point				p;
+	t_vector			v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 1, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 1, -5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 1));
@@ -35,9 +39,11 @@ Test(spheres, a_ray_misses_a_sphere)
 	t_ray					r;
 	t_shape				s;
 	t_hit					*xs;
+	t_point				p;
+	t_vector			v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 2, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 2, -5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 0));
@@ -48,9 +54,11 @@ Test(spheres, a_ray_originates_inside_a_sphere)
 	t_ray					r;
 	t_shape				s;
 	t_hit					*xs;
+	t_point				p;
+	t_vector			v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 0, 0), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, 0, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 2));
@@ -63,9 +71,11 @@ Test(spheres, a_sphere_is_behind_a_ray)
 	t_ray					r;
 	t_shape				s;
 	t_hit					*xs;
+	t_point				p;
+	t_vector			v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 0, 5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, 5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 2));
@@ -108,10 +118,12 @@ Test(spheres, intersect_sets_object_on_intersection)
 	t_shape	s;
 	t_ray		r;
 	t_hit		*xs;
+	t_point	p;
+	t_vector	v;
 
 	xs = NULL;
 	new_sphere(&s);
-	r = new_ray(new_point(0, 0, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
 	intersect(&xs, &s, &r);
 	cr_assert(xs->obj == &s);
 	cr_assert(xs->next->obj == &s);
@@ -183,8 +195,10 @@ Test(spheres, hit_is_always_lowest_nonnegative_intersection)
 Test(spheres, a_sphere_default_transformations)
 {
 	t_shape	s;
+	t_matrix	t;
 	new_sphere(&s);
-	cr_assert(matrix_eq(s.transform, get_identity_matrix()));
+	get_identity_matrix(&t);
+	cr_assert(matrix_eq(s.transform, t));
 }
 
 Test(spheres, changing_a_sphere_transformation)
@@ -193,8 +207,8 @@ Test(spheres, changing_a_sphere_transformation)
 	t_matrix	t;
 
 	new_sphere(&s);
-	t = translation(2, 3, 4);
-	set_transform(&s, t);
+	translation(2, 3, 4, &t);
+	set_transform(&s, &t);
 	cr_assert(matrix_eq(s.transform, t));
 }
 
@@ -203,11 +217,15 @@ Test(spheres, intersecting_a_scaled_sphere_with_a_ray)
 	t_ray		r;
 	t_shape	s;
 	t_hit		*xs;
+	t_matrix	m;
+	t_point		p;
+	t_vector	v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 0, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
-	set_transform(&s, scaling(2, 2, 2));
+	scaling(2, 2, 2, &m);
+	set_transform(&s, &m);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 2));
 	cr_assert(eq(dbl, xs->t, 3));
@@ -219,11 +237,15 @@ Test(spheres, intersecting_a_translated_sphere_with_a_ray)
 	t_ray		r;
 	t_shape	s;
 	t_hit		*xs;
+	t_matrix	m;
+	t_point		p;
+	t_vector	v;
 
 	xs = NULL;
-	r = new_ray(new_point(0, 0, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&s);
-	set_transform(&s, translation(5, 0, 0));
+	translation(5, 0, 0, &m);
+	set_transform(&s, &m);
 	intersect(&xs, &s, &r);
 	cr_assert(eq(int, intersect_count(xs), 0));
 }
@@ -233,11 +255,13 @@ Test(spheres, normal_on_a_sphere_at_a_point_on_x_axis)
 	t_shape	s;
 	t_vector	n;
 	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s);
-	p = new_point(1, 0, 0);
-	n = normal_at(&s, &p);
-	cr_assert(tuple_eq(n, new_vector(1, 0, 0)));
+	new_point(1, 0, 0, &p);
+	normal_at(&s, &p, &n);
+	new_vector(1, 0, 0, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, normal_on_a_sphere_at_a_point_on_y_axis)
@@ -245,11 +269,13 @@ Test(spheres, normal_on_a_sphere_at_a_point_on_y_axis)
 	t_shape	s;
 	t_vector	n;
 	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s);
-	p = new_point(0, 1, 0);
-	n = normal_at(&s, &p);
-	cr_assert(tuple_eq(n, new_vector(0, 1, 0)));
+	new_point(0, 1, 0, &p);
+	normal_at(&s, &p, &n);
+	new_vector(0, 1, 0, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, normal_on_a_sphere_at_a_point_on_z_axis)
@@ -257,11 +283,13 @@ Test(spheres, normal_on_a_sphere_at_a_point_on_z_axis)
 	t_shape	s;
 	t_vector	n;
 	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s);
-	p = new_point(0, 0, 1);
-	n = normal_at(&s, &p);
-	cr_assert(tuple_eq(n, new_vector(0, 0, 1)));
+	new_point(0, 0, 1, &p);
+	normal_at(&s, &p, &n);
+	new_vector(0, 0, 1, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, normal_on_a_sphere_at_a_nonaxial_point)
@@ -269,11 +297,13 @@ Test(spheres, normal_on_a_sphere_at_a_nonaxial_point)
 	t_shape	s;
 	t_vector	n;
 	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s);
-	p = new_point(sqrt(3)/3, sqrt(3)/3, sqrt(3)/3);
-	n = normal_at(&s, &p); 
-	cr_assert(tuple_eq(n, new_vector(sqrt(3)/3, sqrt(3)/3, sqrt(3)/3)));
+	new_point(sqrt(3)/3, sqrt(3)/3, sqrt(3)/3, &p);
+	normal_at(&s, &p, &n);
+	new_vector(sqrt(3)/3, sqrt(3)/3, sqrt(3)/3, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, normal_is_a_normalized_vector)
@@ -281,11 +311,13 @@ Test(spheres, normal_is_a_normalized_vector)
 	t_shape	s;
 	t_vector	n;
 	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s);
-	p = new_point(sqrt(3)/3, sqrt(3)/3, sqrt(3)/3);
-	n = normal_at(&s, &p);
-	cr_assert(tuple_eq(n, normalize(n)));
+	new_point(sqrt(3)/3, sqrt(3)/3, sqrt(3)/3, &p);
+	normal_at(&s, &p, &n);
+	normalize(&n, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, normal_on_a_translated_sphere)
@@ -293,12 +325,16 @@ Test(spheres, normal_on_a_translated_sphere)
 	t_shape	s;
 	t_vector	n;
 	t_point	p;
+	t_matrix	m;
+	t_vector	v;
 
 	new_sphere(&s);
-	set_transform(&s, translation(0, 1, 0));
-	p = new_point(0, 1.70711, -0.70711);
-	n = normal_at(&s, &p);
-	cr_assert(tuple_eq(n, new_vector(0, 0.70711, -0.70711)));
+	translation(0, 1, 0, &m);
+	set_transform(&s, &m);
+	new_point(0, 1.70711, -0.70711, &p);
+	normal_at(&s, &p, &n);
+	new_vector(0, 0.70711, -0.70711, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, normal_on_a_transformed_sphere)
@@ -306,14 +342,17 @@ Test(spheres, normal_on_a_transformed_sphere)
 	t_shape	s;
 	t_vector	n;
 	t_matrix	m;
+	t_matrix	m2;
 	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s);
-	m = multiply_matrices(scaling(1, 0.5, 1), rotation_z(cos(M_PI/5), sin(M_PI/5)));
-	set_transform(&s, m);
-	p = new_point(0, sqrt(2)/2, -sqrt(2)/2);
-	n = normal_at(&s, &p);
-	cr_assert(tuple_eq(n, new_vector(0, 0.97014, -0.24254)));
+	multiply_matrices(scaling(1, 0.5, 1, &m), rotation_z(cos(M_PI/5), sin(M_PI/5), &m2), &m);
+	set_transform(&s, &m);
+	new_point(0, sqrt(2)/2, -sqrt(2)/2, &p);
+	normal_at(&s, &p, &n);
+	new_vector(0, 0.97014, -0.24254, &v);
+	cr_assert(tuple_eq(n, v));
 }
 
 Test(spheres, a_sphere_has_a_default_material)
@@ -324,7 +363,7 @@ Test(spheres, a_sphere_has_a_default_material)
 	new_sphere(&s);
 	s.material.diffuse = 0.9;
 	s.material.specular = 0.9;
-	m = new_material();
+	new_material(&m);
 	cr_assert(color_eq(m.ambient, s.material.ambient));
 	cr_assert(eq(dbl, m.diffuse, s.material.diffuse));
 	cr_assert(eq(dbl, m.specular, s.material.specular));
@@ -355,10 +394,14 @@ Test(intersections, hit_should_offset_the_intersection)
 	t_shape		shape;
 	t_hit		*i;
 	t_comps		comps;
+	t_matrix	m;
+	t_point		p;
+	t_vector	v;
 
-	r = new_ray(new_point(0, 0, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
 	new_sphere(&shape);
-	set_transform(&shape, translation(0, 0, 1));
+	translation(0, 0, 1, &m);
+	set_transform(&shape, &m);
 	i = intersection(5, &shape);
 	comps = prepare_computations(i, &r, i);
 	cr_assert(lt(dbl, comps.over_point.z, -EPSILON/2));

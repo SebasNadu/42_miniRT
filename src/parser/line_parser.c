@@ -1,6 +1,6 @@
 #include "parser.h"
 
-void	set_type(t_line_parse_env    *parse)
+void	set_type(t_line_parse_env *parse)
 {
 	if (parse->line[0] == NULL)
 		parse->type = EMPTY_LINE;
@@ -18,7 +18,7 @@ void	set_type(t_line_parse_env    *parse)
 		parse->type = PLANE;
 }
 
-int	parse_line(int fd, t_line_parse_env    *parse)
+int	parse_line(int fd, t_line_parse_env *parse)
 {
 	parse->line_number++;
 	parse->temp = get_next_line(fd);
@@ -36,16 +36,20 @@ int	parse_line(int fd, t_line_parse_env    *parse)
 int	read_lines_init(t_world *world, t_mini_rt *minirt, int fd)
 {
 	t_line_parse_env	parse;
+<<<<<<< HEAD
 	int	i;
 	int	obj;
+=======
+	int					i;
+>>>>>>> main
 
 	parse.line_number = 0;
 	i = 0;
 	obj = 0;
 	while (1)
 	{
-		if(parse_line(fd, &parse))
-			break;
+		if (parse_line(fd, &parse))
+			break ;
 		if (parse.type == AMBIENT && init_ambient(&parse, world))
 			return (free_s(parse.line));
 		if (parse.type == CAMERA && init_camera(&parse, &(minirt->camera)))

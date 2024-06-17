@@ -31,6 +31,6 @@ int	solo(char *number, double min, double max, t_line_parse_env *env)
 	ratio = ft_atof(number);
 	env->error_type++;
 	if (!is_in_range(ratio, min, max))
-		return(file_error(env, find_error(env->error_type)));
+		return (file_error(env, find_error(env->error_type)));
 	return (0);
 }

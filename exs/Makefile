@@ -18,7 +18,8 @@ WHITE       := \033[0;97m
 
 ifndef EX
 	EX								:= ch01 ch02 ch03 ch04 ch05 ch06 ch07 ch08 ch09 ch10 ch11 \
-											 ch12 ch13 ch14 ch15 ch16 soft_shadows
+											 ch12 ch13 ch14 ch15 ch16 soft_shadows bvh shapes_mapping \
+											 texture_mapping skybox
 endif
 RM								:= rm -rf
 	
@@ -132,6 +133,26 @@ ch16: $(OBJECTS) ch16.c
 
 .PHONY: soft_shadows
 soft_shadows: $(OBJECTS) bonus_soft_shadows.c
+	@$(call run, "$^")
+
+.PHONY: bvh
+bvh: $(OBJECTS) bonus_bvh.c
+	@$(call run, "$^")
+
+.PHONY: shapes_mapping
+shapes_mapping: $(OBJECTS) bonus_shapes_mapping.c
+	@$(call run, "$^")
+
+.PHONY: texture_mapping
+texture_mapping: $(OBJECTS) bonus_texture_mapping.c
+	@$(call run, "$^")
+
+.PHONY: skybox
+skybox: $(OBJECTS) bonus_skybox.c
+	@$(call run, "$^")
+
+.PHONY: spotlight
+spotlight: $(OBJECTS) bonus_spotlight.c
 	@$(call run, "$^")
 
 $(OBJECTS):

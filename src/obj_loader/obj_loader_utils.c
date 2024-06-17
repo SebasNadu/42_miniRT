@@ -1,10 +1,12 @@
 #include "obj_loader.h"
 
-bool	print_ignore_message(int line_nb)
+bool	print_ignore_message(char const *filename, int *line_nb)
 {
-	ft_putstr_fd("minirt: .obj: Wrong format on line ", STDERR_FILENO);
-	ft_putnbr_fd(line_nb, STDERR_FILENO);
-	ft_putendl_fd(" (ignored).", STDERR_FILENO);
+	ft_putstr_fd("minirt: obj files loader: ", STDERR_FILENO);
+	ft_putstr_fd((char *)filename, STDERR_FILENO);
+	ft_putstr_fd(": Line ", STDERR_FILENO);
+	ft_putnbr_fd(*line_nb, STDERR_FILENO);
+	ft_putendl_fd(" ignored.", STDERR_FILENO);
 	return (true);
 }
 
@@ -47,16 +49,33 @@ bool	are_floats(char *str1, char *str2, char *str3)
 	return (true);
 }
 
-void	free_array(char **array)
+void	free_matrix(char **matrix)
 {
 	int	i;
 
 	i = 0;
-	while (array[i])
+	while (matrix[i])
 	{
-		free(array[i]);
+		free(matrix[i]);
+		matrix[i] = NULL;
 		i++;
 	}
-	free(array[i]);
+	free(matrix[i]);
+	matrix[i] = NULL;
+	free(matrix);
+	matrix = NULL;
+}
+
+void	free_3d_array(char ***array)
+{
+	int	i;
+
+	i = -1;
+	while (array[++i])
+	{
+		free_matrix(array[i]);
+		array[i] = NULL;
+	}
 	free(array);
+	array = NULL;
 }

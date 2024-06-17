@@ -55,7 +55,7 @@ static void	set_indices(t_list *container, double *n)
 	if (!ft_lstsize(container))
 		*n = 1.0;
 	else
-		*n = ((t_shape *)ft_lstlast(container)
+		*n = ((t_shape *)container
 				->content)->material.refractive_index;
 }
 
@@ -73,7 +73,7 @@ void	find_refractive_indices(t_comps *comps, t_hit *i, t_hit *xs)
 		if (tmp && is_included(container, tmp->obj))
 			remove_obj(&container, tmp->obj);
 		else
-			ft_lstadd_back(&container, new_lst(tmp->obj));
+			ft_lstadd_front(&container, new_lst(tmp->obj));
 		if (i == tmp) 
 		{
 			set_indices(container, &comps->n2);

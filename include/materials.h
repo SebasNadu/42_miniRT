@@ -35,6 +35,6 @@ typedef struct s_lighting_params
 	t_color		specular;
 }	t_lighting_params;
 
-t_material	new_material(void);
+t_material	*new_material(t_material *material);
 
 #endif

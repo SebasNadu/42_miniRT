@@ -1,60 +1,63 @@
 #include "obj_loader.h"
 
-static void	read_face(t_obj_loader *loader, char **params)
+static void	read_face(t_obj_loader *loader, char **params, int *len)
 {
-	int		p_len;
-
-	p_len = ft_matrix_len(params) - 1;
-	if (p_len < 3)
+	*len = ft_matrix_len(params) - 1;
+	if (*len < 3)
 		return ;
-	else if (p_len > 3)
-		loader->t_max += p_len - 2;
+	pthread_mutex_lock(&loader->t_mutex);
+	if (*len > 3)
+		loader->t_max += *len - 2;
 	else
 		loader->t_max++;
+	pthread_mutex_unlock(&loader->t_mutex);
 }
 
 static void	read_line(t_obj_loader *loader, char **params)
 {
-	int	type_size;
+	int	len;
 
 	if (!params[0])
 		return ;
-	type_size = ft_strlen(params[0]) + 1;
-	if (ft_strncmp(params[0], "v", type_size) == 0)
+	len = ft_strlen(params[0]) + 1;
+	if (ft_strncmp(params[0], "v", len) == 0)
+	{
+		pthread_mutex_lock(&loader->v_mutex);
 		loader->v_max++;
-	else if (ft_strncmp(params[0], "vn", type_size) == 0)
+		pthread_mutex_unlock(&loader->v_mutex);
+	}
+	else if (ft_strncmp(params[0], "vn", len) == 0)
+	{
+		pthread_mutex_lock(&loader->n_mutex);
 		loader->n_max++;
-	else if (ft_strncmp(params[0], "f", type_size) == 0)
-		read_face(loader, params);
-	else if (ft_strncmp(params[0], "g", type_size) == 0)
-		loader->g_max++;
+		pthread_mutex_unlock(&loader->n_mutex);
+	}
+	else if (ft_strncmp(params[0], "f", len) == 0)
+		read_face(loader, params, &len);
+	else if (ft_strncmp(params[0], "g", len) == 0)
+	{
+		pthread_mutex_lock(&loader->gp_mutex);
+		loader->gp_max++;
+		pthread_mutex_unlock(&loader->gp_mutex);
+	}
 }
 
-bool	set_max_values(t_obj_loader *loader, char *filename)
+void	*set_max_values(void *data)
 {
-	int		fd;
-	char	*line;
-	char	**params;
+	t_thread_data	*td;
+	t_obj_loader	*loader;
+	int				line_nb;
 
-	if (!open_obj_file(filename, &fd))
-		return (false);
-	line = get_next_line(fd);
-	while (line)
-	{
-		params = ft_subsplit(line, " \n");
-		read_line(loader, params);
-		free(line);
-		free_array(params);
-		line = get_next_line(fd);
-	}
-	free(line);
-	close(fd);
-	loader->normals = malloc(loader->n_max * sizeof(t_vector));
-	loader->groups = malloc(loader->g_max * sizeof(t_shape));
-	loader->vertices = malloc(loader->v_max * sizeof(t_point));
-	loader->triangles = malloc(loader->t_max * sizeof(t_shape));
-	if (!loader->normals || !loader->groups || !loader->vertices
-		|| !loader->triangles)
-		return (false);
-	return (true);
+	td = (t_thread_data *)data;
+	if (!td || !td->data)
+		return (ft_putendl_fd("minirt: set_max_values: Wrong arguments",
+				STDERR_FILENO), NULL);
+	loader = (t_obj_loader *)td->data;
+	if (!loader->tokens || td->start < 0 || td->end < 0 || td->start >= td->end)
+		return (ft_putendl_fd("minirt: set_max_values: Wrong arguments",
+				STDERR_FILENO), NULL);
+	line_nb = td->start - 1;
+	while (++line_nb < td->end)
+		read_line(loader, loader->tokens[line_nb]);
+	return (data);
 }

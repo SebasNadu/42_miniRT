@@ -5,12 +5,14 @@ t_tuple	new_tuple(double x, double y, double z, double w)
 	return ((t_tuple){x, y, z, w});
 }
 
-t_tuple	new_point(double x, double y, double z)
+t_point	*new_point(double x, double y, double z, t_point *p)
 {
-	return (new_tuple(x, y, z, 1.0));
+	*p = (t_point){x, y, z, 1.0};
+	return (p);
 }
 
-t_tuple	new_vector(double x, double y, double z)
+t_vector	*new_vector(double x, double y, double z, t_vector *v)
 {
-	return (new_tuple(x, y, z, 0.0));
+	*v = (t_vector){x, y, z, 0.0};
+	return (v);
 }

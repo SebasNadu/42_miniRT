@@ -48,8 +48,12 @@ Test(colors, multiplying_a_color_by_a_scalar)
 Test(colors, multiply_colors)
 {
 	t_color	c;
+	t_color c1;
+	t_color c2;
 
-	c = hadamard_product(new_color(1, 0.2, 0.4), new_color(0.9, 1, 0.1));
+	c1 = new_color(1, 0.2, 0.4);
+	c2 = new_color(0.9, 1, 0.1);
+	hadamard_product(&c1, &c2, &c);
 	cr_assert(epsilon_eq(dbl, c.r, 0.9, DBL_EPSILON));
 	cr_assert(epsilon_eq(dbl, c.g, 0.2, DBL_EPSILON));
 	cr_assert(epsilon_eq(dbl, c.b, 0.04, DBL_EPSILON));

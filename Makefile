@@ -25,7 +25,7 @@ RM								:= rm -rf
 
 OBJ_DIR						:= obj
 SRC_DIRS					:= tuples utils canvas matrices rays shapes lights materials \
-										 world camera patterns bounds obj_loader parser
+										 world camera patterns bounds obj_loader texture_mapping parser
 SRC_DIRS					:= $(addprefix src/, $(SRC_DIRS))
 SRC_DIRS					+= src
 LIB_DIR						:= lib
@@ -39,24 +39,24 @@ vpath %.o $(OBJ_DIR)
 
 LIBFT							:= $(LIBFT_DIR)/libft.a
 MLX								:= $(MLX_DIR)/build/libmlx42.a
-HEADERS						:= tuples.h utils.h canvas.h matrices.h rays.h shapes.h \
-										 lights.h materials.h world.h camera.h patterns.h groups.h \
-										 obj_loader.h parser.h
-SOURCE						:= main.c tuple.c basic_math.c vector_math.c utils.c \
-										 color.c canvas.c save.c hooks.c mx.c mx_operations.c \
-										 mx_attributes.c mx_transformations.c mx_rotations.c \
-										 ray.c sphere.c intersections.c shape.c light.c material.c \
-										 world.c view_transform.c camera.c render.c color_at.c \
-										 plane.c pattern.c stripe.c gradient.c ring.c checkers.c \
-										 full_gradient.c radial_gradient.c solid_pattern.c \
-										 blended.c refrac_indices.c reflec_and_refrac.c cube.c \
-										 cylinder.c cone.c discriminants.c group.c group_utils.c \
-										 bounds.c local_bounds.c free.c triangle.c obj_loader.c	\
-										 ft_atof.c	obj_loader_utils.c set_max_values.c \
-										 obj_file_parser.c obj_vertice_parser.c obj_face_parser.c \
-										 obj_group_parser.c obj_normal_parser.c triangle_bounds.c \
-										 csg.c csg_utils.c shadow_calculations.c sequencer.c light_shading.c \
-										 parser.c parser_utils.c element_counter.c free_print.c\
+HEADERS						:= tuples.h utils.h canvas.h matrices.h rays.h shapes.h lights.h \
+										 materials.h world.h camera.h patterns.h groups.h obj_loader.h \
+                     parser.h
+SOURCE						:= main.c tuple.c basic_math.c vector_math.c utils.c color.c \
+										 canvas.c save.c hooks.c mx.c mx_operations.c mx_attributes.c \
+										 mx_transformations.c mx_rotations.c ray.c sphere.c intersections.c \
+										 shape.c light.c material.c world.c view_transform.c camera.c \
+										 render.c color_at.c plane.c pattern.c stripe.c gradient.c ring.c \
+										 checkers.c full_gradient.c radial_gradient.c solid_pattern.c \
+										 blended.c refrac_indices.c reflec_and_refrac.c cube.c cylinder.c \
+										 cone.c discriminants.c group.c group_utils.c bounds.c local_bounds.c \
+										 free.c triangle.c obj_loader.c	ft_atof.c	obj_loader_utils.c \
+										 set_max_values.c obj_file_parser.c triangle_bounds.c csg.c csg_utils.c \
+										 shadow_calculations.c sequenc.c light_shading.c bounding_boxes.c \
+										 bvh.c bvh_utils.c threads.c obj_open_read.c obj_split_file_content.c \
+										 obj_lines_parser.c obj_triangles_utils.c uv_helpers.c shapes_mapping.c \
+										 cube_mapping.c cube_mapping2.c cube_align_check.c texture_mapping.c shadow_calculations.c sequencer.c light_shading.c \
+                     parser.c parser_utils.c element_counter.c free_print.c \
 										 init_ambient.c init_mini_rt.c error.c valid_args.c \
 										 line_parser.c init_camera.c init_light.c init_sphere.c
 OBJECTS						:= $(addprefix $(OBJ_DIR)/, $(SOURCE:.c=.o))

@@ -15,15 +15,18 @@ typedef struct s_camera
 	double		pixel_size;
 	t_matrix	transform;
 	t_matrix	inverse;
-	t_matrix	transpose;
 }	t_camera;
 
 // View transform
-t_matrix	view_transform(t_point *from, t_point *to, t_vector *up);
+t_matrix	*view_transform(t_point *from, t_point *to, t_vector *up,
+				t_matrix *out);
 
 // Camera
-t_camera	new_camera(double hsize, double vsize, double fov);
-t_ray		ray_for_pixel(t_camera *camera, double px, double py);
-void		set_transform_camera(t_camera *camera, t_matrix transform);
+t_camera	*new_camera(t_camera *camera, double hsize, double vsize,
+				double fov);
+t_ray		*ray_for_pixel(t_camera *camera, double px, double py, t_ray *ray);
+void		set_transform_camera(t_camera *camera, t_matrix *transform);
+t_matrix	*view_transform_with_direction(t_point *from, t_vector *direction,
+				t_vector *up, t_matrix *out);
 
 #endif

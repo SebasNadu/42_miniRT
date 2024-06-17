@@ -27,5 +27,6 @@ bool		tuple_eq(t_tuple a, t_tuple b);
 bool		color_eq(t_color a, t_color b);
 t_world		default_world(void);
 t_pattern	new_test_pattern(void);
+void		new_test_shape(t_shape *shape);
 
 #endif

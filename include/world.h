@@ -4,14 +4,19 @@
 # include "shapes.h"
 # include "lights.h"
 # include "tuples.h"
+# include "groups.h"
 
 # define MAX_RECURSION	4
+# define BVH_THRESHOLD 8
 
 typedef struct s_world
 {
 	t_hit		*xs;
 	int			objs_count;
 	t_shape		*objs;
+	int			objs_inside_count;
+	t_shape		*objs_inside;
+	size_t		objs_ext_count;
 	int			lights_count;
 	t_light		*lights;
 	t_color		ambient;
@@ -43,7 +48,7 @@ typedef struct s_refrac_params
 	t_color		refracted_color;
 }	t_refrac_params;
 
-t_world	new_world(void);
+t_world	*new_world(t_world *world);
 t_hit	*intersect_world(t_world *world, t_ray *ray);
 t_comps	prepare_computations(t_hit *intersect, t_ray *ray, t_hit *xs);
 t_color	shade_hit(t_world *world, t_comps *comps);
@@ -63,6 +68,13 @@ void	free_world(t_world *world);
 // shadow_calculations.c
 bool	is_shadowed(t_world *world, t_point *light_pos, t_point *point);
 double	intensity_at(t_world *world, t_point *point, int index);
-t_point	point_on_light(t_light *light, double u, double v);
+t_point	*point_on_light(t_light *light, double u, double v, t_point *p);
+// bvh.c
+void		create_bvh(t_world *world);
+void		divide_group(t_shape *group, int threshold);
+bool		check_group(t_shape *group, int *threshold);
+void		make_subgroup(t_shape *group, t_shape **container);
+void		partition_children(t_shape *group, t_shape **left, t_shape **right);
+void		split_bounds(t_bounds s_box[2]);
 
 #endif

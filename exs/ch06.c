@@ -29,9 +29,10 @@ void	light_and_shading(t_canvas *rt, t_params *params, int xy[2])
 
 	if (params->hits)
 	{
-		pos = position(&params->ray, params->hits->t);
-		params->view.normal_v = normal_at(&params->sphere, &pos);
-		params->view.eye_v = negate(params->ray.direction);
+		position(&params->ray, params->hits->t, &pos);
+		normal_at(&params->sphere, &pos, &params->view.normal_v);
+		params->view.eye_v = params->ray.direction;
+		negate(&params->view.eye_v, &params->view.eye_v);
 		params->sphere_color = lighting(&params->sphere,
 				&params->light, &pos, &params->view);
 		write_pixel(rt->img, xy[0], xy[1], &params->sphere_color);
@@ -55,10 +56,11 @@ void	render_sphere(t_canvas *rt, t_params *params)
 		{
 			xs = NULL;
 			params->wall_x = -params->half + params->pixel_size * xy[0];
-			position = new_point(params->wall_x, params->wall_y,
-					params->wall_z);
-			params->ray = new_ray(params->ray_origin,
-					normalize(subtract(position, params->ray_origin)));
+			new_point(params->wall_x, params->wall_y, params->wall_z,
+				&position);
+			new_ray(&params->ray_origin,
+				normalize(subtract(&position, &params->ray_origin, &position),
+					&position), &params->ray);
 			intersect(&xs, &params->sphere, &params->ray);
 			params->hits = hit(xs);
 			light_and_shading(rt, params, xy);
@@ -68,18 +70,23 @@ void	render_sphere(t_canvas *rt, t_params *params)
 
 void	set_params(t_params *params)
 {
+	t_point	p;
+	t_color	c;
+
 	params->wall_x = 0;
 	params->wall_y = 0;
 	params->wall_z = 10;
 	params->wall_size = 7;
 	params->pixel_size = params->wall_size / HEIGHT;
 	params->half = params->wall_size * 0.5;
-	params->ray_origin = new_point(0, 0, -5);
+	new_point(0, 0, -5, &params->ray_origin);
 	params->sphere_color = new_color(0.6, 0.1, 0.1);
 	params->bg_color = 0xFF000000;
 	new_sphere(&params->sphere);
 	params->sphere.material.color.g = 0.2;
-	params->light = new_light(new_point(-10, 10, -10), new_color(1, 1, 1));
+	new_point(-10, 10, -10, &p);
+	c = new_color(1, 1, 1);
+	new_light(&p, &c, &params->light);
 	params->sphere.material.ambient = new_color(0.1, 0.1, 0.1);
 	params->sphere.material.diffuse = 0.8;
 	params->sphere.material.specular = 0.8;
@@ -87,7 +94,9 @@ void	set_params(t_params *params)
 
 void	set_transformations(t_params *params)
 {
-	set_transform(&params->sphere, scaling(0.9, 0.9, 0.9));
+	t_matrix	tmp;
+
+	set_transform(&params->sphere, scaling(0.9, 0.9, 0.9, &tmp));
 	// set_transform(&params->sphere, scaling(1, 0.5, 1));
 	// set_transform(&params->sphere, scaling(0.5, 1, 1));
 	// set_transform(&params->sphere, multiply_matrices(

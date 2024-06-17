@@ -2,18 +2,22 @@
 #include "groups.h"
 
 static bool		intersect_cone(t_hit **xs, t_shape *shape, t_ray *r);
-static t_vector	normal_at_cone(t_shape *shape, t_point *local_point);
+static t_vector	*normal_at_cone(t_shape *shape, t_point *local_point,
+					t_vector *normal);
 
 t_shape	*new_cone(t_shape *shape)
 {
 	new_shape(shape);
-	shape->cone.origin = new_point(0, 0, 0);
-	shape->cone.min = -INFINITY;
-	shape->cone.max = INFINITY;
+	new_point(0, 0, 0, &shape->cone.origin);
+	shape->cone.min = -MAXFLOAT;
+	shape->cone.max = MAXFLOAT;
 	shape->cone.closed = false;
 	shape->intersect_fn = intersect_cone;
 	shape->normal_at = normal_at_cone;
-	shape->bounds_fn = cone_bounds;
+	shape->bounds_of = cone_bounds;
+	shape->material.pattern.texture_map.uv_mapping_fn = cylindrical_map;
+	shape->material.pattern.texture_map.uv_pattern.width = 16;
+	shape->material.pattern.texture_map.uv_pattern.height = 8;
 	return (shape);
 }
 
@@ -69,7 +73,8 @@ static bool	intersect_cone(t_hit **xs, t_shape *shape, t_ray *r)
 	return (true);
 }
 
-static t_vector	normal_at_cone(t_shape *shape, t_point *local_point)
+static t_vector	*normal_at_cone(t_shape *shape, t_point *local_point,
+					t_vector *normal)
 {
 	double	dist;
 	double	y;
@@ -77,14 +82,14 @@ static t_vector	normal_at_cone(t_shape *shape, t_point *local_point)
 	dist = (local_point->x * local_point->x)
 		+ (local_point->z * local_point->z);
 	if (dist < 1.0 && local_point->y >= shape->cone.max - EPSILON)
-		return (new_vector(0, 1, 0));
+		return (new_vector(0, 1, 0, normal));
 	else if (dist < 1.0 && local_point->y <= shape->cone.min + EPSILON)
-		return (new_vector(0, -1, 0));
+		return (new_vector(0, -1, 0, normal));
 	else
 	{
 		y = sqrt(dist);
 		if (local_point->y > 0.0)
 			y = -y;
-		return (new_vector(local_point->x, y, local_point->z));
+		return (new_vector(local_point->x, y, local_point->z, normal));
 	}
 }

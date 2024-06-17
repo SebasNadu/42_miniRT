@@ -37,6 +37,8 @@ void		write_pixel_32(mlx_image_t *img, uint32_t x, uint32_t y,
 // Save
 void		canvas_to_ppm(t_canvas *canvas, char *filename);
 t_color		read_pixel(mlx_image_t *img, uint32_t x, uint32_t y);
+t_color		*pixel_at(mlx_texture_t *texture, uint32_t x, uint32_t y,
+				t_color *color);
 // hooks
 void		handle_keyhook(mlx_key_data_t keydata, void *param);
 void		quit(void *param);

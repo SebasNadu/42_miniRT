@@ -5,9 +5,11 @@
 Test(shapes, the_default_transformation)
 {
 	t_shape	s;
+	t_matrix	m;
 
 	new_shape(&s);
-	cr_assert(matrix_eq(s.transform, get_identity_matrix()));
+	get_identity_matrix(&m);
+	cr_assert(matrix_eq(s.transform, m));
 }
 
 /* Test if the transformation matrix of a shape can be successfully changed. */
@@ -17,8 +19,8 @@ Test(shapes, assigning_a_transformation)
 	t_matrix	expected;
 
 	new_shape(&s);
-	expected = translation(2, 3, 3);
-	set_transform(&s, expected);
+	translation(2, 3, 3, &expected);
+	set_transform(&s, &expected);
 	cr_assert(matrix_eq(s.transform, expected));
 }
 
@@ -31,7 +33,7 @@ Test(shapes, the_default_material)
 
 	new_shape(&s);
 	result = s.material;
-	expected = new_material();
+	new_material(&expected);
 
 	cr_assert(epsilon_eq(result.color.r, expected.color.r, EPSILON));
 	cr_assert(epsilon_eq(result.color.g, expected.color.g, EPSILON));
@@ -51,7 +53,7 @@ Test(shapes, assigning_a_material)
 	t_material	expected;
 
 	new_shape(&s);
-	expected = new_material();
+	new_material(&expected);
 	expected.ambient = new_color(1, 1, 1);
 	s.material = expected;
 
@@ -73,11 +75,12 @@ Test(shapes, normal_on_a_translated_shape)
 	t_shape		s;
 	t_vector	n;
 	t_point		p;
+	t_matrix	m;
 
 	new_sphere(&s);
-	set_transform(&s, translation(0, 1, 0));
-	p = new_point(0, 1.70711, -0.70711);
-	n = normal_at(&s, &p);
+	set_transform(&s, translation(0, 1, 0, &m));
+	new_point(0, 1.70711, -0.70711, &p);
+	normal_at(&s, &p, &n);
 
 	cr_assert(epsilon_eq(n.x, 0, EPSILON));
 	cr_assert(epsilon_eq(n.y, 0.70711, EPSILON));
@@ -90,14 +93,16 @@ Test(shapes, normal_on_a_transformed_shape)
 {
 	t_shape		s;
 	t_matrix	m;
+	t_matrix	m2;
 	t_vector	n;
 	t_point		p;
 
 	new_sphere(&s);
-	m = multiply_matrices(scaling(1, 0.5, 1), rotation_z(cos(M_PI/5), sin(M_PI/5)));
-	set_transform(&s, m);
-	p = new_point(0, sqrtf(2)/2, -sqrtf(2)/2);
-	n = normal_at(&s, &p);
+	multiply_matrices(scaling(1, 0.5, 1, &m),
+			rotation_z(cos(M_PI/5), sin(M_PI/5), &m2), &m);
+	set_transform(&s, &m);
+	new_point(0, sqrtf(2)/2, -sqrtf(2)/2, &p);
+	normal_at(&s, &p, &n);
 
 	cr_assert(epsilon_eq(n.x, 0, EPSILON));
 	cr_assert(epsilon_eq(n.y, 0.97014, EPSILON));

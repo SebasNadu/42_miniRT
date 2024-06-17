@@ -7,7 +7,7 @@ t_pattern	new_solid_pattern(t_color color)
 {
 	t_pattern	solid;
 
-	solid = new_pattern();
+	new_pattern(&solid);
 	solid.color = color;
 	solid.pattern_at = solid_at;
 	solid.has_pattern = true;

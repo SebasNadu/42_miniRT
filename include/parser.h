@@ -88,9 +88,9 @@ typedef struct s_e_counts
 
 typedef struct s_line_parse_env
 {
-    char    *temp;
-    char    **line;
-    int		line_number;
+	char	*temp;
+	char	**line;
+	int		line_number;
 	int		error_type;
 	int		type;
 }	t_line_parse_env;

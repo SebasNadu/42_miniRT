@@ -2,7 +2,8 @@
 #include "groups.h"
 
 static bool		intersect_csg(t_hit **xs, t_shape *shape, t_ray *r);
-static t_vector	normal_at_csg(t_shape *shape, t_point *local_point);
+static t_vector	*normal_at_csg(t_shape *shape, t_point *local_point,
+					t_vector *normal);
 static void		csg_bounds(t_shape *shape);
 
 t_shape	*new_csg(t_operation operation, t_shape *left, t_shape *right,
@@ -17,11 +18,11 @@ t_shape	*new_csg(t_operation operation, t_shape *left, t_shape *right,
 	csg->csg.right->parent = csg;
 	csg->intersect_fn = intersect_csg;
 	csg->normal_at = normal_at_csg;
-	csg->bounds_fn = csg_bounds;
+	csg->bounds_of = csg_bounds;
 	return (csg);
 }
 
-static void	merge_intersections(t_hit **all_xs, t_hit *new_xs)
+void	merge_intersections(t_hit **all_xs, t_hit *new_xs)
 {
 	t_hit	*tmp;
 
@@ -40,7 +41,8 @@ static bool	intersect_csg(t_hit **xs, t_shape *csg, t_ray *r)
 	t_hit	*r_xs; 
 	t_hit	*all_xs;
 
-	csg->bounds_fn(csg);
+	if (!csg->is_bounds_precal)
+		csg->bounds_of(csg);
 	if (!intersect_bounds(&csg->bounds, r))
 		return (false);
 	l_xs = NULL;
@@ -53,22 +55,26 @@ static bool	intersect_csg(t_hit **xs, t_shape *csg, t_ray *r)
 	return (filter_intersections(all_xs, csg, xs) != NULL);
 }
 
-static t_vector	normal_at_csg(t_shape *shape, t_point *local_point)
+static t_vector	*normal_at_csg(t_shape *shape, t_point *local_point,
+					t_vector *normal)
 {
 	(void)shape;
 	(void)local_point;
 	printf("Exception: Attempted to get a normal from a CSG object.\n");
-	return ((t_vector){0, 0, 0, 0});
+	*normal = (t_vector){0, 0, 0, 0};
+	return (normal);
 }
 
 static void	csg_bounds(t_shape *shape)
 {
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(new_point(INFINITY, INFINITY, INFINITY),
-				new_point(-INFINITY, -INFINITY, -INFINITY));
-		get_csg_bounds(shape, &shape->bounds);
-		get_bounds(shape, &shape->bounds);
-	}
+	if (!shape)
+		return ;
+	shape->is_bounds_precal = true;
+	shape->bounds = (t_bounds){(t_point){MAXFLOAT, MAXFLOAT, MAXFLOAT, 0},
+		(t_point){-MAXFLOAT, -MAXFLOAT, -MAXFLOAT, 0}};
+	if (shape->csg.left)
+		get_csg_bounds(shape->csg.left, &shape->bounds);
+	if (shape->csg.right)
+		get_csg_bounds(shape->csg.right, &shape->bounds);
+	get_bounds(shape, &shape->bounds);
 }

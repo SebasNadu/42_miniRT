@@ -34,27 +34,27 @@ static void	write_circle(mlx_image_t *img, int xy[2], int radius,
 
 static void	render_clock(t_canvas *canvas)
 {
-	t_color	color;
+	t_color		color;
 	t_matrix	transformations[2];
 	int			i;
 	double		radius;
 	t_point		points[2];
+	t_matrix	tmp;
 
 	color = new_color(0.5, 1, 0.5);
-	transformations[0] = translation(
-			*canvas->width * 0.5, 0, *canvas->height * 0.5);
+	translation(*canvas->width * 0.5, 0, *canvas->height * 0.5,
+		&transformations[0]);
 	if (*canvas->width < *canvas->height)
 		radius = *canvas->width * 3 / 8;
 	else
 		radius = *canvas->height * 3 / 8;
-	points[0] = new_point(0, 0, radius);
+	new_point(0, 0, radius, &points[0]);
 	i = -1;
 	while (++i < 12)
 	{
-		transformations[1] = rotation_y(cos(i * M_PI / 6), sin(i * M_PI / 6));
-		points[1] = multiply_matrix_by_tuple(
-				multiply_matrices(transformations[0], transformations[1]),
-				points[0]);
+		rotation_y(cos(i * M_PI / 6), sin(i * M_PI / 6), &transformations[1]);
+		multiply_matrix_by_tuple(multiply_matrices(&transformations[0],
+				&transformations[1], &tmp), &points[0], &points[1]);
 		write_circle(canvas->img, (int [2]){points[1].x, points[1].z},
 			5, color);
 	}

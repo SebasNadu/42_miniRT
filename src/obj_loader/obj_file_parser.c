@@ -1,60 +1,97 @@
 #include "obj_loader.h"
 
-static bool	parse_line(t_obj_loader *loader, char **params, int *line_nb)
+static bool	allocate_loader_arrays(t_obj_loader *loader)
 {
-	int	type_size;
-
-	if (!params[0])
-		return (loader->ignored_lines++, true);
-	type_size = ft_strlen(params[0]) + 1;
-	if (ft_strncmp(params[0], "v", type_size) == 0)
-		return (parse_vertice(loader, params, line_nb));
-	else if (ft_strncmp(params[0], "vn", type_size) == 0)
-		return (parse_normal(loader, params, line_nb));
-	else if (ft_strncmp(params[0], "f", type_size) == 0)
-		return (parse_triangle(loader, params, line_nb));
-	else if (ft_strncmp(params[0], "g", type_size) == 0)
-		return (parse_group(loader, params, line_nb));
-	else
-		return (loader->ignored_lines++, true);
+	loader->normals = (t_vector *)malloc(loader->n_max * sizeof(t_vector));
+	if (!loader->normals)
+		return (perror("minirt: malloc"), false);
+	loader->groups = (t_shape *)malloc(loader->gp_max * sizeof(t_shape));
+	if (!loader->groups)
+		return (perror("minirt: malloc"), free(loader->normals), false);
+	loader->vertices = (t_point *)malloc(loader->v_max * sizeof(t_point));
+	if (!loader->vertices)
+		return (perror("minirt: malloc"), free(loader->normals),
+			free(loader->groups), false);
+	loader->triangles = (t_shape *)malloc(loader->t_max * sizeof(t_shape));
+	if (!loader->triangles)
+		return (perror("minirt: malloc"), free(loader->normals),
+			free(loader->groups), free(loader->vertices), false);
+	return (true);
 }
 
-bool	check_extension(char *filename, char *ext)
+static void	free_loader(t_obj_loader *loader)
 {
-	char const	*file_ext;
-
-	file_ext = ft_strrchr(filename, '.');
-	if (file_ext)
-	{
-		if (ft_strncmp(file_ext, ext, ft_strlen(ext) + 1) == 0)
-			return (true);
-	}
-	return (false);
+	if (!loader)
+		return ;
+	if (loader->lines)
+		free_matrix(loader->lines);
+	pthread_mutex_destroy(&loader->v_mutex);
+	pthread_mutex_destroy(&loader->n_mutex);
+	pthread_mutex_destroy(&loader->t_mutex);
+	pthread_mutex_destroy(&loader->gp_mutex);
+	pthread_mutex_destroy(&loader->ig_lines_mutex);
 }
 
-bool	parse_obj_file(t_obj_loader *loader, char *filename)
+static bool	read_and_set_tokens(t_obj_loader *loader)
 {
-	int		fd;
-	int		line_nb;
-	char	*line;
-	char	**params;
+	t_threads_setup	tsetup; 
+	pthread_t		*threads;
+	t_thread_data	*tdata; 
+	char			*file_content;
 
-	if (!loader || !filename)
-		return (false);
-	if (!set_max_values(loader, filename) || !open_obj_file(filename, &fd))
-		return (false);
-	line_nb = 1;
-	line = get_next_line(fd);
-	while (line)
+	file_content = NULL;
+	if (!read_file_to_memory(loader->filename, &file_content))
+		return (free(file_content), free_loader(loader), false);
+	if (!split_file_in_lines(&file_content, &loader->lines, &loader->tokens,
+			&tsetup.nb_iters))
+		return (free(file_content), free_loader(loader), false);
+	if (!set_threads_data(loader, &threads, &tdata, &tsetup))
+		return (free_loader(loader), free_3d_array(loader->tokens), false);
+	if (!exec_threads_for(split_lines_in_tokens, threads, tdata,
+			&tsetup.nb_threads))
+		return (free_3d_array(loader->tokens), free_loader(loader), false);
+	if (!exec_threads_for(set_max_values, threads, tdata, &tsetup.nb_threads))
+		return (free_loader(loader), free_3d_array(loader->tokens), false);
+	if (!allocate_loader_arrays(loader))
+		return (free_loader(loader), free_3d_array(loader->tokens), false);
+	free_loader(loader);
+	return (true);
+}
+
+static bool	create_object(t_obj_loader *loader)
+{
+	int	i;
+
+	i = -1;
+	while (loader->tokens[++i])
 	{
-		params = ft_subsplit(line, "\n ");
-		if (!parse_line(loader, params, &line_nb))
-			return (free(line), free_array(params), close(fd),
-				free_loader(loader), false);
-		free(line);
-		free_array(params);
-		line = get_next_line(fd);
-		line_nb++;
+		if (!obj_parse_line(loader, loader->tokens[i], i + 1))
+		{
+			free_3d_array(loader->tokens);
+			free(loader->vertices);
+			free(loader->normals);
+			free(loader->triangles);
+			free(loader->groups);
+			return (false);
+		}
 	}
-	return (free(line), close(fd), true);
+	free_3d_array(loader->tokens);
+	free(loader->vertices);
+	free(loader->normals);
+	return (true);
+}
+
+bool	parse_obj_file(t_obj_loader *loader, char const *filename)
+{
+	if (!loader || !filename || !loader->default_group)
+	{
+		ft_putendl_fd("minirt: obj_loader: invalid arguments", STDERR_FILENO);
+		return (false);
+	}
+	loader->filename = filename;
+	if (!read_and_set_tokens(loader))
+		return (false);
+	if (!create_object(loader))
+		return (false);
+	return (true);
 }

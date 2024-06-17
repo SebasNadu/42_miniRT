@@ -2,15 +2,17 @@
 #include "groups.h"
 
 static bool		intersect_cube(t_hit **xs, t_shape *shape, t_ray *r);
-static t_vector	normal_at_cube(t_shape *shape, t_point *local_point);
+static t_vector	*normal_at_cube(t_shape *shape, t_point *local_point,
+					t_vector *normal);
 
 t_shape	*new_cube(t_shape *shape)
 {
 	new_shape(shape);
-	shape->cube.origin = new_point(0, 0, 0);
+	new_point(0, 0, 0, &shape->cube.origin);
 	shape->intersect_fn = intersect_cube;
 	shape->normal_at = normal_at_cube;
-	shape->bounds_fn = cube_bounds;
+	shape->bounds_of = cube_bounds;
+	shape->material.pattern.texture_map.uv_mapping_fn = cube_map;
 	return (shape);
 }
 
@@ -53,7 +55,8 @@ static bool	intersect_cube(t_hit **xs, t_shape *shape, t_ray *r)
 	return (true);
 }
 
-static t_vector	normal_at_cube(t_shape *shape, t_point *local_point)
+static t_vector	*normal_at_cube(t_shape *shape, t_point *local_point,
+					t_vector *normal)
 {
 	double	maxc;
 	double	absx;
@@ -66,8 +69,8 @@ static t_vector	normal_at_cube(t_shape *shape, t_point *local_point)
 	absz = fabs(local_point->z);
 	maxc = ft_max(absx, absy, absz);
 	if (eq_dbl(maxc, absx))
-		return (new_vector(local_point->x, 0, 0));
+		return (new_vector(local_point->x, 0, 0, normal));
 	if (eq_dbl(maxc, absy))
-		return (new_vector(0, local_point->y, 0));
-	return (new_vector(0, 0, local_point->z));
+		return (new_vector(0, local_point->y, 0, normal));
+	return (new_vector(0, 0, local_point->z, normal));
 }

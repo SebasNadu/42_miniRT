@@ -4,7 +4,7 @@ void	intersect(t_hit **xs, t_shape *s, t_ray *r)
 {
 	t_ray	local_ray;
 
-	local_ray = transform(r, &s->inverse);
+	transform(r, &s->inverse, &local_ray);
 	s->intersect_fn(xs, s, &local_ray);
 }
 

@@ -4,78 +4,70 @@ void	plane_bounds(t_shape *shape)
 {
 	t_bounds	tmp_bounds;
 
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(new_point(-INFINITY, 0, -INFINITY),
-				new_point(INFINITY, 0, INFINITY));
-		tmp_bounds = new_bounds(new_point(INFINITY, INFINITY, INFINITY),
-				new_point(-INFINITY, -INFINITY, -INFINITY));
-		get_bounds(shape, &tmp_bounds);
-		shape->bounds = tmp_bounds;
-	}
+	if (!shape)
+		return ;
+	tmp_bounds = (t_bounds){(t_point){MAXFLOAT, MAXFLOAT, MAXFLOAT, 1.0},
+		(t_point){-MAXFLOAT, -MAXFLOAT, -MAXFLOAT, 1.0}};
+	shape->is_bounds_precal = true;
+	shape->bounds = (t_bounds){(t_point){-MAXFLOAT, 0, -MAXFLOAT, 1},
+		(t_point){MAXFLOAT, 0, MAXFLOAT, 1}};
+	get_bounds(shape, &tmp_bounds);
 }
 
 void	cube_bounds(t_shape *shape)
 {
 	t_bounds	tmp_bounds;
 
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(new_point(-1, -1, -1),
-				new_point(1, 1, 1));
-		tmp_bounds = new_bounds(new_point(INFINITY, INFINITY, INFINITY),
-				new_point(-INFINITY, -INFINITY, -INFINITY));
-		get_bounds(shape, &tmp_bounds);
-		shape->bounds = tmp_bounds;
-	}
+	if (!shape)
+		return ;
+	tmp_bounds = (t_bounds){(t_point){MAXFLOAT, MAXFLOAT, MAXFLOAT, 1.0},
+		(t_point){-MAXFLOAT, -MAXFLOAT, -MAXFLOAT, 1.0}};
+	shape->is_bounds_precal = true;
+	shape->bounds = (t_bounds){(t_point){-1, -1, -1, 1},
+		(t_point){1, 1, 1, 1}};
+	get_bounds(shape, &tmp_bounds);
 }
 
 void	cone_bounds(t_shape *shape)
 {
 	t_bounds	tmp_bounds;
+	double		limit;
 
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(new_point(-1, shape->cone.min, -1),
-				new_point(1, shape->cone.max, 1));
-		tmp_bounds = new_bounds(new_point(INFINITY, INFINITY, INFINITY),
-				new_point(-INFINITY, -INFINITY, -INFINITY));
-		get_bounds(shape, &tmp_bounds);
-		shape->bounds = tmp_bounds;
-	}
+	if (!shape)
+		return ;
+	tmp_bounds = (t_bounds){(t_point){MAXFLOAT, MAXFLOAT, MAXFLOAT, 1.0},
+		(t_point){-MAXFLOAT, -MAXFLOAT, -MAXFLOAT, 1.0}};
+	shape->is_bounds_precal = true;
+	limit = fmax(fabs(shape->cone.min), fabs(shape->cone.max));
+	shape->bounds = (t_bounds){(t_point){-limit, shape->cone.min, -limit, 1},
+		(t_point){limit, shape->cone.max, limit, 1}};
+	get_bounds(shape, &tmp_bounds);
 }
 
 void	cylinder_bounds(t_shape *shape)
 {
 	t_bounds	tmp_bounds;
 
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(new_point(-1, shape->cyl.min, -1),
-				new_point(1, shape->cyl.max, 1));
-		tmp_bounds = new_bounds(new_point(INFINITY, INFINITY, INFINITY),
-				new_point(-INFINITY, -INFINITY, -INFINITY));
-		get_bounds(shape, &tmp_bounds);
-		shape->bounds = tmp_bounds;
-	}
+	if (!shape)
+		return ;
+	tmp_bounds = (t_bounds){(t_point){MAXFLOAT, MAXFLOAT, MAXFLOAT, 1.0},
+		(t_point){-MAXFLOAT, -MAXFLOAT, -MAXFLOAT, 1.0}};
+	shape->is_bounds_precal = true;
+	shape->bounds = (t_bounds){(t_point){-1, shape->cyl.min, -1, 1},
+		(t_point){1, shape->cyl.max, 1, 1}};
+	get_bounds(shape, &tmp_bounds);
 }
 
 void	sphere_bounds(t_shape *shape)
 {
 	t_bounds	tmp_bounds;
 
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(new_point(-1, -1, -1),
-				new_point(1, 1, 1));
-		tmp_bounds = new_bounds(new_point(INFINITY, INFINITY, INFINITY),
-				new_point(-INFINITY, -INFINITY, -INFINITY));
-		get_bounds(shape, &tmp_bounds);
-		shape->bounds = tmp_bounds;
-	}
+	if (!shape)
+		return ;
+	tmp_bounds = (t_bounds){(t_point){MAXFLOAT, MAXFLOAT, MAXFLOAT, 1.0},
+		(t_point){-MAXFLOAT, -MAXFLOAT, -MAXFLOAT, 1.0}};
+	shape->is_bounds_precal = true;
+	shape->bounds = (t_bounds){(t_point){-1, -1, -1, 1},
+		(t_point){1, 1, 1, 1}};
+	get_bounds(shape, &tmp_bounds);
 }

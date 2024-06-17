@@ -20,9 +20,26 @@ t_color	read_pixel(mlx_image_t *img, uint32_t x, uint32_t y)
 	uint8_t			*pixel;
 	double const	inv_255 = 0.00392157;
 
-	if (x < 0 || x >= img->width || y < 0 || y >= img->height)
+	if ((x >= img->width || y >= img->height) || !img || !img->pixels)
 		return ((t_color){0, 0, 0});
 	pixel = img->pixels + ((y * img->width + x) << 2);
 	return (new_color(pixel[0] * inv_255, pixel[1] * inv_255,
 			pixel[2] * inv_255));
+}
+
+t_color	*pixel_at(mlx_texture_t *texture, uint32_t x, uint32_t y,
+			t_color *color)
+{
+	uint8_t			*pixel;
+	double const	inv_255 = 0.00392157;
+
+	if ((x >= texture->width || y >= texture->height) || !texture
+		|| !texture->pixels)
+		return (NULL);
+	pixel = texture->pixels + ((y * texture->width + x)
+			* texture->bytes_per_pixel);
+	color->r = pixel[0] * inv_255;
+	color->g = pixel[1] * inv_255;
+	color->b = pixel[2] * inv_255;
+	return (color);
 }

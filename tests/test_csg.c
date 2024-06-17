@@ -113,12 +113,14 @@ Test(csg, a_ray_misses_a_CSG_object)
 	t_shape	csg;
 	t_ray		r;
   t_hit		*xs;
+	t_point	p;
+	t_vector	v;
 
 	xs = NULL;
 	new_sphere(&s);
   new_cube(&c);
   new_csg(UNION, &c, &s, &csg);
-	r = new_ray(new_point(0, 2, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 2, -5, &p), new_vector(0, 0, 1, &v), &r);
 	csg.intersect_fn(&xs, &csg, &r);
   cr_assert(eq(ptr, xs, NULL));
 }
@@ -130,12 +132,15 @@ Test(csg, a_ray_hits_a_CSG_object)
   t_shape	csg;
   t_ray		r;
   t_hit		*xs;
+	t_matrix	m;
+	t_point	p;
+	t_vector	v;
 
 	new_sphere(&s1);
 	new_sphere(&s2);
-	set_transform(&s2, translation(0, 0, 0.5));
+	set_transform(&s2, translation(0, 0, 0.5, &m));
 	new_csg(UNION, &s1, &s2, &csg);
-  r = new_ray(new_point(0, 0, -5), new_vector(0, 0, 1));
+	new_ray(new_point(0, 0, -5, &p), new_vector(0, 0, 1, &v), &r);
   xs = NULL;
   csg.intersect_fn(&xs, &csg, &r);
   cr_assert(eq(int, intersect_count(xs), 2));

@@ -13,14 +13,14 @@ typedef struct s_environment {
 	t_vector	wind;
 }	t_environment;
 
-static t_projectile	projectile(t_point position, t_vector velocity)
+static t_projectile	projectile(t_point *position, t_vector *velocity)
 {
-	return ((t_projectile){position, velocity});
+	return ((t_projectile){(*position), (*velocity)});
 }
 
-static t_environment	environment(t_vector gravity, t_vector wind)
+static t_environment	environment(t_vector *gravity, t_vector *wind)
 {
-	return ((t_environment){gravity, wind});
+	return ((t_environment){(*gravity), (*wind)});
 }
 
 static t_projectile	tick(t_environment env, t_projectile proj)
@@ -28,9 +28,9 @@ static t_projectile	tick(t_environment env, t_projectile proj)
 	t_point		pos;
 	t_vector	vel;
 
-	pos = add(proj.position, proj.velocity);
-	vel = add(add(proj.velocity, env.gravity), env.wind);
-	return (projectile(pos, vel));
+	add(&proj.position, &proj.velocity, &pos);
+	add(add(&proj.velocity, &env.gravity, &vel), &env.wind, &vel);
+	return (projectile(&pos, &vel));
 }
 
 static void	write_dot(mlx_image_t *img, int x, int y, t_color color)
@@ -51,11 +51,13 @@ static void	render_projectile_motion(t_canvas *canvas)
 	t_color			c;
 	t_projectile	p;
 	t_environment	e;
+	t_point			t[2];
 
 	c = new_color(1, 0, 0);
-	p = projectile(new_point(0, 0, 0),
-			multiply(normalize(new_vector(1, 1.8, 0)), 11.25));
-	e = environment(new_vector(0, -0.1, 0), new_vector(-0.01, 0, 0));
+	p = projectile(new_point(0, 0, 0, &t[0]), multiply(
+				normalize(new_vector(1, 1.8, 0, &t[1]), &t[1]), 11.25, &t[1]));
+	e = environment(new_vector(0, -0.1, 0, &t[0]),
+			new_vector(-0.01, 0, 0, &t[1]));
 	printf("x: %f, y: %f, z: %f\n", p.position.x, p.position.y, p.position.z);
 	while (p.position.y >= 0.0)
 	{

@@ -34,10 +34,10 @@ void	render_sphere(t_canvas *rt, t_params *params)
 		{
 			xs = NULL;
 			params->world_x = -params->half + params->pixel_size * xy[0];
-			position = new_point(params->world_x, params->world_y,
-					params->world_z);
-			ray = new_ray(params->ray_origin,
-					normalize(subtract(position, params->ray_origin)));
+			new_point(params->world_x, params->world_y, params->world_z,
+				&position);
+			new_ray(&params->ray_origin, normalize(subtract(&position,
+						&params->ray_origin, &position), &position), &ray);
 			intersect(&xs, &params->sphere, &ray);
 			if (hit(xs))
 				write_pixel(rt->img, xy[0], xy[1], &params->sphere_color);
@@ -49,13 +49,15 @@ void	render_sphere(t_canvas *rt, t_params *params)
 
 void	set_params(t_params *params)
 {
+	t_matrix	m[2];
+
 	params->world_x = 0;
 	params->world_y = 0;
 	params->world_z = 10;
 	params->wall_size = 7;
 	params->pixel_size = params->wall_size / HEIGHT;
 	params->half = params->wall_size * 0.5;
-	params->ray_origin = new_point(0, 0, -5);
+	new_point(0, 0, -5, &params->ray_origin);
 	params->sphere_color = new_color(0.6, 0.1, 0.1);
 	params->bg_color = new_color(0.1, 0.2, 0.3);
 	new_sphere(&params->sphere);
@@ -64,7 +66,7 @@ void	set_params(t_params *params)
 	// set_transform(&params->sphere, multiply_matrices(
 	// 		rotation_z(cos(M_PI / 4), sin(M_PI / 4)), scaling(0.5, 1, 1)));
 	set_transform(&params->sphere, transformations(2,
-			scaling(0.5, 1, 1), rotation_z(cos(M_PI_4), sin(M_PI_4))));
+			scaling(0.5, 1, 1, &m[0]), rotation_z(cos(M_PI_4), sin(M_PI_4), &m[1])));
 	// set_transform(&params->sphere, multiply_matrices(
 	// 		shearing((t_shearing){1, 0}, (t_shearing){0}, (t_shearing){0}),
 	// 		scaling(0.5, 1, 1)));

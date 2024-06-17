@@ -10,7 +10,7 @@ Test(matrices, create_4x4_matrix)
 		{13.5, 14.5, 15.5, 16.5},
 	};
 
-	m = new_matrix(table, MAX);
+	new_matrix(table, MAX, &m);
 	cr_assert(eq(dbl, m.mx[0][0], 1));
 	cr_assert(eq(dbl, m.mx[0][1], 2));
 	cr_assert(eq(dbl, m.mx[0][2], 3));
@@ -40,7 +40,7 @@ Test(matrices, create_2x2_matrix)
 		{1, -2},
 	};
 
-	m = new_matrix(table, 2);
+	new_matrix(table, 2, &m);
 	cr_assert(eq(dbl, m.mx[0][0], -3));
 	cr_assert(eq(flt, m.mx[0][1], 5));
 	cr_assert(eq(flt, m.mx[1][0], 1));
@@ -57,7 +57,7 @@ Test(matrices, create_matrix_3x3)
 		{0, 1, 1},
 	};
 
-	m = new_matrix(table, 3);
+	new_matrix(table, 3, &m);
 	cr_assert(eq(dbl, m.mx[0][0], -3));
 	cr_assert(eq(dbl, m.mx[0][1], 5));
 	cr_assert(eq(dbl, m.mx[0][2], 0));
@@ -89,8 +89,8 @@ Test(matrices, is_equal_matrix)
 		{5, 4, 3, 2},
 	};
 
-	a = new_matrix(table_a, MAX);
-	b = new_matrix(table_b, MAX);
+	new_matrix(table_a, MAX, &a);
+	new_matrix(table_b, MAX, &b);
 	result = is_eq_mx(a, b);
 	cr_assert(eq(int, result, 1));
 }
@@ -113,8 +113,8 @@ Test(matrices, is_not_equal_matrix)
 		{5, 4, 3, 2},
 	};
 
-	a = new_matrix(table_a, MAX);
-	b = new_matrix(table_b, MAX);
+	new_matrix(table_a, MAX, &a);
+	new_matrix(table_b, MAX, &b);
 	result = is_eq_mx(a, b);
 	cr_assert(ne(int, result, 1));
 }
@@ -139,9 +139,9 @@ Test(matrices, multiply_matrices)
 		{1, 2, 7, 8},
 	};
 
-	a = new_matrix(table_a, MAX);
-	b = new_matrix(table_b, MAX);
-	c = multiply_matrices(a, b);
+	new_matrix(table_a, MAX, &a);
+	new_matrix(table_b, MAX, &b);
+	multiply_matrices(&a, &b, &c);
 
 	cr_assert(eq(dbl, c.mx[0][0], 20));
 	cr_assert(eq(dbl, c.mx[0][1], 22));
@@ -176,9 +176,9 @@ Test(matrices, multiply_mx_by_tuple)
 		{0, 0, 0, 1},
 	};
 
-	a = new_matrix(table_a, MAX);
+	new_matrix(table_a, MAX, &a);
 	b = new_tuple(1, 2, 3, 1);
-	c = multiply_matrix_by_tuple(a, b);
+	multiply_matrix_by_tuple(&a, &b, &c);
 	cr_assert(eq(dbl, c.x, 18));
 	cr_assert(eq(dbl, c.y, 24));
 	cr_assert(eq(dbl, c.z, 33));
@@ -203,9 +203,9 @@ Test(matrices, multiply_by_identity_matrix)
 		{0, 0, 0, 1},
 	};
 
-	a = new_matrix(table_a, MAX);
-	id = new_matrix(table_id, MAX);
-	result = multiply_matrices(a, id);
+	new_matrix(table_a, MAX, &a);
+	new_matrix(table_id, MAX, &id);
+	multiply_matrices(&a, &id, &result);
 
 	cr_assert(eq(dbl, result.mx[0][0], 0));
 	cr_assert(eq(dbl, result.mx[0][1], 1));
@@ -239,8 +239,8 @@ Test(matrices, transpose_matrix)
 		{0, 0, 5, 8},
 	};
 
-	a = new_matrix(table_a, MAX);
-	result = transpose_matrix(a);
+	new_matrix(table_a, MAX, &a);
+	transpose_matrix(&a, &result);
 
 	cr_assert(eq(dbl, result.mx[0][0], 0));
 	cr_assert(eq(dbl, result.mx[0][1], 9));
@@ -272,8 +272,8 @@ Test(matrices, determinant_2x2)
 		{-3, 2},
 	};
 
-	a = new_matrix(table_a, 2);
-	result = get_determinant(a);
+	new_matrix(table_a, 2, &a);
+	result = get_determinant(&a);
 	cr_assert(eq(int, result, 17));
 }
 
@@ -281,14 +281,17 @@ Test(matrices, submatrix_3x3)
 {
 	t_matrix	a;
 	t_matrix	result;
+	int				n[2];
 	double const	table_a[MAX][MAX] = {
 		{1, 5, 0},
 		{-3, 2, 7},
 		{0, 6, -3},
 	};
 
-	a = new_matrix(table_a, 3);
-	result = get_submatrix(a, 0, 2);
+	new_matrix(table_a, 3, &a);
+	n[0] = 0;
+	n[1] = 2;
+	get_submatrix(&a, &n[0], &n[1], &result);
 
 	cr_assert(eq(dbl, result.mx[0][0], -3));
 	cr_assert(eq(dbl, result.mx[0][1], 2));
@@ -308,8 +311,11 @@ Test(matrices, submatrix_4x4)
 		{-7, 1, -1, 1},
 	};
 
-	a = new_matrix(table_a, 4);
-	result = get_submatrix(a, 2, 1);
+	new_matrix(table_a, 4, &a);
+	int	n[2];
+	n[0] = 2;
+	n[1] = 1;
+	get_submatrix(&a, &n[0], &n[1], &result);
 
 	cr_assert(eq(dbl, result.mx[0][0], -6));
 	cr_assert(eq(dbl, result.mx[0][1], 1));
@@ -334,11 +340,16 @@ Test(matrices, minor_3x3_matrix)
 		{6, -1, 5},
 	};
 
-	a = new_matrix(table_a, 3);
-	result = get_minor(a, 0, 0);
+	new_matrix(table_a, 3, &a);
+	int n[2];
+	n[0] = 0;
+	n[1] = 0;
+	result = get_minor(&a, &n[0], &n[1]);
 	cr_assert(eq(dbl, result, 2));
 
-	result = get_minor(a, 1, 0);
+	n[0] = 1;
+	n[1] = 0;
+	result = get_minor(&a, &n[0], &n[1]);
 	cr_assert(eq(dbl, result, 25));
 }
 
@@ -352,10 +363,10 @@ Test(matrices, cofactor_3x3_matrix)
 		{6, -1, 5},
 	};
 
-	a = new_matrix(table_a, 3);
-	result = get_cofactor(a, 0, 0);
+	new_matrix(table_a, 3, &a);
+	result = get_cofactor(&a, 0, 0);
 	cr_assert(eq(dbl, result, 2));
-	result = get_cofactor(a, 1, 0);
+	result = get_cofactor(&a, 1, 0);
 	cr_assert(eq(dbl, result, -25));
 }
 
@@ -369,15 +380,14 @@ Test(matrices, determinant_3x3_matrix)
 		{2, 6, 4},
 	};
 
-	a = new_matrix(table_a, 3);
-	result = get_cofactor(a, 0, 0);
+	new_matrix(table_a, 3, &a);
+	result = get_cofactor(&a, 0, 0);
 	cr_assert(eq(dbl, result, 56));
-	result = get_cofactor(a, 0, 1);
+	result = get_cofactor(&a, 0, 1);
 	cr_assert(eq(dbl, result, 12));
-	result = get_cofactor(a, 0, 2);
+	result = get_cofactor(&a, 0, 2);
 	cr_assert(eq(dbl, result, -46));
-
-	result = get_determinant(a);
+	result = get_determinant(&a);
 	cr_assert(eq(dbl, result, -196));
 }
 
@@ -392,16 +402,16 @@ Test(matrices, determinant_4x4_matrix)
 		{-6, 7, 7, -9},
 	};
 
-	a = new_matrix(table_a, 4);
-	result = get_cofactor(a, 0, 0);
+	new_matrix(table_a, 4, &a);
+	result = get_cofactor(&a, 0, 0);
 	cr_assert(eq(dbl, result, 690));
-	result = get_cofactor(a, 0, 1);
+	result = get_cofactor(&a, 0, 1);
 	cr_assert(eq(dbl, result, 447));
-	result = get_cofactor(a, 0, 2);
+	result = get_cofactor(&a, 0, 2);
 	cr_assert(eq(dbl, result, 210));
-	result = get_cofactor(a, 0, 3);
+	result = get_cofactor(&a, 0, 3);
 	cr_assert(eq(dbl, result, 51));
-	result = get_determinant(a);
+	result = get_determinant(&a);
 	cr_assert(eq(dbl, result, -4071));
 }
 
@@ -416,10 +426,10 @@ Test(matrices, is_invertible_4x4_matrix)
 		{9, 1, 7, -6},
 	};
 
-	a = new_matrix(table_a, 4);
-	result = get_determinant(a);
+	new_matrix(table_a, 4, &a);
+	result = get_determinant(&a);
 	cr_assert(eq(dbl, result, -2120));
-	cr_assert(eq(int, is_invertible(a), true));
+	cr_assert(eq(int, is_invertible(&a), true));
 }
 
 Test(matrices, is_not_invertible_4x4_matrix)
@@ -432,10 +442,10 @@ Test(matrices, is_not_invertible_4x4_matrix)
 		{0, -5, 1, -5},
 		{0, 0, 0, 0},
 	};
-	a = new_matrix(table_a, 4);
-	result = get_determinant(a);
+	new_matrix(table_a, 4, &a); 
+	result = get_determinant(&a);
 	cr_assert(eq(dbl, result, 0));
-	cr_assert(eq(int, is_invertible(a), false));
+	cr_assert(eq(int, is_invertible(&a), false));
 }
 
 Test(matrices, inverse_4x4_matrix)
@@ -450,17 +460,17 @@ Test(matrices, inverse_4x4_matrix)
 		{1, -3, 7, 4},
 	};
 
-	a = new_matrix(table_a, 4);
-	b = inverse_matrix(a);
+	new_matrix(table_a, 4, &a); 
+	inverse_matrix(&a, &b);
 
-	result = get_determinant(a);
+	result = get_determinant(&a);
 cr_assert(eq(dbl, result, 532));
 
-	result = get_cofactor(a, 2, 3);
+	result = get_cofactor(&a, 2, 3);
 	cr_assert(eq(dbl, result, -160));
 	cr_assert(eq(flt, b.mx[3][2], (double)-160 / 532));
 
-	result = get_cofactor(a, 3, 2);
+	result = get_cofactor(&a, 3, 2);
 	cr_assert(eq(dbl, result, 105));
 	cr_assert(eq(flt, b.mx[2][3], (double)105 / 532));
 
@@ -496,8 +506,8 @@ Test(matrices, inverse_4x4_matrix_2)
 		{-3, 0, -9, -4},
 	};
 	
-	a = new_matrix(table_a, 4);
-	b = inverse_matrix(a);
+	new_matrix(table_a, 4, &a);
+	inverse_matrix(&a, &b);
 
 	cr_assert(epsilon_eq(dbl, b.mx[0][0], -0.15385, EPSILON));
 	cr_assert(epsilon_eq(dbl, b.mx[0][1], -0.15385, EPSILON));
@@ -531,8 +541,8 @@ Test(matrices, inverse_4x4_matrix_3)
 		{-7, 6, 6, 2},
 	};
 	
-	a = new_matrix(table_a, 4);
-	b = inverse_matrix(a);
+	new_matrix(table_a, 4, &a);
+	inverse_matrix(&a, &b);
 
 	cr_assert(epsilon_eq(dbl, b.mx[0][0], -0.04074, EPSILON));
 	cr_assert(epsilon_eq(dbl, b.mx[0][1], -0.07778, EPSILON));
@@ -574,10 +584,11 @@ Test(matrices, multiplying_a_product_by_its_inverse)
 		{6, -2, 0, 5},
 	};
 	
-	a = new_matrix(table_a, 4);
-	b = new_matrix(table_b, 4);
-	c = multiply_matrices(a, b);
-	result = multiply_matrices(c, inverse_matrix(b));
+	new_matrix(table_a, 4, &a);
+	new_matrix(table_b, 4, &b);
+	multiply_matrices(&a, &b, &c);
+	inverse_matrix(&b, &b);
+	multiply_matrices(&c, &b, &result);
 
 	cr_assert(epsilon_eq(dbl, result.mx[0][0], 3, EPSILON));
 	cr_assert(epsilon_eq(dbl, result.mx[0][1], -9, EPSILON));

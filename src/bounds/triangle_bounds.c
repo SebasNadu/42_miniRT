@@ -30,10 +30,9 @@ static void	get_triangle_bounds(t_shape *shape)
 
 void	triangle_bounds(t_shape *shape)
 {
-	if (!shape->is_bounds_precal)
-	{
-		shape->is_bounds_precal = true;
-		shape->bounds = new_bounds(shape->tri.p1, shape->tri.p1);
-		get_triangle_bounds(shape);
-	}
+	if (!shape)
+		return ;
+	shape->is_bounds_precal = true;
+	new_bounds(&shape->tri.p1, &shape->tri.p1, &shape->bounds);
+	get_triangle_bounds(shape);
 }

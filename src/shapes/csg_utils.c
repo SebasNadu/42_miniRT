@@ -24,8 +24,6 @@ static bool	is_group_hit(t_shape **root, t_shape *shape)
 	{
 		if (tmp == shape)
 			return (true);
-		if (tmp->is_group && is_group_hit(&tmp->root, shape))
-			return (true);
 		if (tmp->is_csg)
 		{
 			if (is_left_hit(tmp->csg.left, shape))
@@ -33,6 +31,8 @@ static bool	is_group_hit(t_shape **root, t_shape *shape)
 			if (is_left_hit(tmp->csg.right, shape))
 				return (true);
 		}
+		if (tmp->is_group && is_group_hit(&tmp->group.root, shape))
+			return (true);
 		tmp = tmp->next;
 	}
 	return (false);
@@ -49,7 +49,7 @@ static bool	is_left_hit(t_shape *left, t_shape *shape)
 		if (is_left_hit(left->csg.right, shape))
 			return (true);
 	}
-	if (left->is_group && is_group_hit(&left->root, shape))
+	if (left->is_group && is_group_hit(&left->group.root, shape))
 		return (true);
 	return (false);
 }
@@ -78,27 +78,28 @@ t_hit	*filter_intersections(t_hit *xs, t_shape *csg, t_hit **result)
 
 void	get_csg_bounds(t_shape *current, t_bounds *b)
 {
-	if (!current)
-		return ;
-	if (current->is_group)
-		get_group_bounds(&current->root, b);
-	if (current->is_csg)
+	if (current)
 	{
-		get_csg_bounds(current->csg.left, b);
-		get_csg_bounds(current->csg.right, b);
+		if (current->is_csg)
+		{
+			get_csg_bounds(current->csg.left, b);
+			get_csg_bounds(current->csg.right, b);
+		}
+		if (current->is_group)
+			get_group_bounds(current->group.root, b);
+		if (!current->is_bounds_precal)
+			current->bounds_of(current);
+		if (current->bounds.min.x < b->min.x)
+			b->min.x = current->bounds.min.x;
+		if (current->bounds.min.y < b->min.y)
+			b->min.y = current->bounds.min.y;
+		if (current->bounds.min.z < b->min.z)
+			b->min.z = current->bounds.min.z;
+		if (current->bounds.max.x > b->max.x)
+			b->max.x = current->bounds.max.x;
+		if (current->bounds.max.y > b->max.y)
+			b->max.y = current->bounds.max.y;
+		if (current->bounds.max.z > b->max.z)
+			b->max.z = current->bounds.max.z;
 	}
-	if (!current->is_bounds_precal)
-		current->bounds_fn(current);
-	if (current->bounds.min.x < b->min.x)
-		b->min.x = current->bounds.min.x;
-	if (current->bounds.min.y < b->min.y)
-		b->min.y = current->bounds.min.y;
-	if (current->bounds.min.z < b->min.z)
-		b->min.z = current->bounds.min.z;
-	if (current->bounds.max.x > b->max.x)
-		b->max.x = current->bounds.max.x;
-	if (current->bounds.max.y > b->max.y)
-		b->max.y = current->bounds.max.y;
-	if (current->bounds.max.z > b->max.z)
-		b->max.z = current->bounds.max.z;
 }

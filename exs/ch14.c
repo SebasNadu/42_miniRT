@@ -5,8 +5,8 @@
 #include "groups.h"
 #include <time.h>
 
-#define WIDTH	600
-#define HEIGHT	480
+#define WIDTH	1080
+#define HEIGHT	720
 #define N_OBJS	1
 
 double	random_double(double min, double max)
@@ -14,16 +14,15 @@ double	random_double(double min, double max)
 	return (min + (rand() / (RAND_MAX / (max - min))));
 }
 
-t_matrix	random_translation(t_bounds bounds)
+t_matrix	*random_translation(t_bounds bounds, t_matrix *m)
 {
-	t_matrix	m;
 	t_point		p;
 
-	p = new_point(
-			random_double(bounds.min.x, bounds.max.x),
-			random_double(bounds.min.y, bounds.max.y),
-			random_double(bounds.min.z, bounds.max.z));
-	m = translation(p.x, p.y, p.z);
+	new_point(
+		random_double(bounds.min.x, bounds.max.x),
+		random_double(bounds.min.y, bounds.max.y),
+		random_double(bounds.min.z, bounds.max.z), &p);
+	translation(p.x, p.y, p.z, m);
 	return (m);
 }
 
@@ -45,11 +44,12 @@ void	create_scene1(t_world *world)
 	int			num_spheres;
 	t_bounds	bounds;
 	t_shape		plane;
-	t_matrix	m;
+	t_matrix	m[2];
+	t_point		p[2];
 
 	num_spheres = 5;
 	offset = 10;
-	bounds = new_bounds(new_point(0, 0, 0), new_point(10, 10, 10));
+	new_bounds(new_point(0, 0, 0, &p[0]), new_point(10, 10, 10, &p[1]), &bounds);
 	s = malloc(((num_spheres * num_spheres) * num_spheres) * sizeof(t_shape));
 	world->objs = malloc(((num_spheres * num_spheres) + 1) * sizeof(t_shape));
 	world->objs_count = (num_spheres * num_spheres) + 1;
@@ -59,12 +59,12 @@ void	create_scene1(t_world *world)
 		{
 			g = &world->objs[x * num_spheres + y];
 			new_group(g);
-			set_transform(g, translation(x * offset, y * offset, 0));
+			set_transform(g, translation(x * offset, y * offset, 0, &m[0]));
       for (int i = 0; i < num_spheres; i++)
       {
         tmp = &s[x * num_spheres * num_spheres + y * num_spheres + i];
 				new_sphere(tmp);
-				set_transform(tmp, random_translation(bounds));
+				set_transform(tmp, random_translation(bounds, &m[0]));
 				tmp->material.color = random_color();
 				if (i % 2 == 0)
 				{
@@ -85,9 +85,9 @@ void	create_scene1(t_world *world)
 	}
 	new_plane(&plane);
 	plane.material.color = new_color(0.5, 0.5, 0.5);
-	m = multiply_matrices(rotation_x(cos(-M_PI / 8), sin(-M_PI / 8)),
-			translation(0, -10, 0));
-	set_transform(&plane, m);
+	multiply_matrices(rotation_x(cos(-M_PI / 8), sin(-M_PI / 8), &m[0]),
+			translation(0, -10, 0, &m[1]), &m[0]);
+	set_transform(&plane, &m[0]);
 	world->objs[num_spheres * num_spheres] = plane;
 }
 
@@ -95,31 +95,32 @@ void	hexagon_side(t_shape *side)
 {
 	t_shape		*corner;
 	t_shape		*edge;
-	t_matrix	m;
+	t_matrix	m[3];
 
 	corner = malloc(1 * sizeof(t_shape));
 	new_sphere(corner);
 	corner->material.diffuse = 0.9;
 	corner->material.specular = 0.9;
-	m = multiply_matrices(translation(0, 0, -1), scaling(0.25, 0.25, 0.25));
-	set_transform(corner, m);
+	multiply_matrices(translation(0, 0, -1, &m[0]), scaling(0.25, 0.25, 0.25, &m[1]), &m[2]);
+	set_transform(corner, &m[2]);
 	edge = malloc(1 * sizeof(t_shape));
 	new_cylinder(edge);
 	edge->cyl.min = 0;
 	edge->cyl.max = 1;
-	m = multiply_matrices(translation(0, 0, -1),
-			rotation_y(cos(M_PI / -6), sin(M_PI / -6)));
-	m = multiply_matrices(m, rotation_z(cos(M_PI / -2), sin(M_PI / -2)));
-	m = multiply_matrices(m, scaling(0.25, 1.0, 0.25));
-	set_transform(edge, m);
+	multiply_matrices(translation(0, 0, -1, &m[0]),
+		rotation_y(cos(M_PI / -6), sin(M_PI / -6), &m[1]), &m[2]);
+	multiply_matrices(&m[2], rotation_z(cos(M_PI / -2), sin(M_PI / -2), &m[1]), &m[0]);
+	multiply_matrices(&m[0], scaling(0.25, 1.0, 0.25, &m[1]), &m[2]);
+	set_transform(edge, &m[2]);
 	new_group(side);
 	add_child(side, corner);
 	add_child(side, edge);
 }
 void	create_scene2(t_world *world)
 {
-	t_shape	*sides;
-	t_shape	*hexagon;
+	t_shape		*sides;
+	t_shape		*hexagon;
+	t_matrix	m;
 
 	world->objs = malloc(1 * sizeof(t_shape));
 	world->objs_count = 1;
@@ -130,21 +131,26 @@ void	create_scene2(t_world *world)
 	{
 		hexagon_side(&sides[i]);
 		set_transform(&sides[i],
-			rotation_y(cos(i * M_PI / 3), sin(i * M_PI / 3)));
+			rotation_y(cos(i * M_PI / 3), sin(i * M_PI / 3), &m));
 		add_child(hexagon, &sides[i]);
 	}
-	hexagon->material.pattern = new_radial_gradient_pattern(
-			new_solid_pattern(new_color(0.5, 0.7, 0.9)),
-			new_solid_pattern(new_color(0.6, 0.3, 0.1)));
+	new_radial_gradient_pattern(
+		new_solid_pattern(new_color(0.5, 0.7, 0.9)),
+		new_solid_pattern(new_color(0.6, 0.3, 0.1)), &hexagon->material.pattern);
 	set_pattern_transform(&hexagon->material.pattern,
-		scaling(0.33, 0.33, 0.33));
+		scaling(0.33, 0.33, 0.33, &m));
 }
 
 void	create_lights1(t_world *world)
 {
+	t_point		p;
+	t_color		c;
+
 	world->lights = malloc(1 * sizeof(t_light));
 	world->lights_count = 1;
-	world->lights[0] = new_light(new_point(0, 50, -25), new_color(1, 1, 1));
+	new_point(0, 50, -25, &p);
+	c = new_color(1, 1, 1);
+	new_light(&p, &c, &world->lights[0]);
 }
 
 void	create_camera1(t_camera *camera)
@@ -153,11 +159,12 @@ void	create_camera1(t_camera *camera)
 	t_point		to;
 	t_vector	up;
 
-	*camera = new_camera(WIDTH, HEIGHT, M_PI / 3);
-	from = new_point(25, -16, -25);
-	to = new_point(25, 30, 25);
-	up = new_vector(0, 1, 0);
-	set_transform_camera(camera, view_transform(&from, &to, &up));
+	new_camera(camera, WIDTH, HEIGHT, M_PI / 3);
+	new_point(25, -16, -25, &from);
+	new_point(25, 30, 25, &to);
+	new_vector(0, 1, 0, &up);
+	set_transform_camera(camera, view_transform(&from, &to, &up,
+			&camera->transform));
 }
 
 void	create_camera2(t_camera *camera)
@@ -166,22 +173,24 @@ void	create_camera2(t_camera *camera)
 	t_point		to;
 	t_vector	up;
 
-	*camera = new_camera(WIDTH, HEIGHT, M_PI / 3);
-	from = new_point(0, 2, -2);
-	to = new_point(0, 0, 0);
-	up = new_vector(0, 1, 0);
-	set_transform_camera(camera, view_transform(&from, &to, &up));
+	new_camera(camera, WIDTH, HEIGHT, M_PI / 3);
+	new_point(0, 2, -2, &from);
+	new_point(0, 0, 0, &to);
+	new_vector(0, 1, 0, &up);
+	set_transform_camera(camera, view_transform(&from, &to, &up,
+			&camera->transform));
 }
 
 void	render_lots_of_spheres(void)
 {
 	t_mini_rt	rt;
 
-	rt.world = new_world();
+	new_world(&rt.world);
 	create_scene1(&rt.world);
 	create_lights1(&rt.world);
 	create_camera1(&rt.camera);
 	new_canvas(&rt.canvas, WIDTH, HEIGHT, "Chapter 14 - Lots of Spheres");
+	create_bvh(&rt.world);
 	render(&rt);
 	mlx_image_to_window(rt.canvas.mlx, rt.canvas.img, 0, 0);
 	mlx_close_hook(rt.canvas.mlx, &quit, &rt.canvas);
@@ -195,11 +204,12 @@ void	render_hexagon(void)
 {
 	t_mini_rt	rt;
 
-	rt.world = new_world();
+	new_world(&rt.world);
 	create_lights1(&rt.world);
 	create_camera2(&rt.camera);
 	create_scene2(&rt.world);
 	new_canvas(&rt.canvas, WIDTH, HEIGHT, "Chapter 14 - Hexagon");
+	create_bvh(&rt.world);
 	render(&rt);
 	mlx_image_to_window(rt.canvas.mlx, rt.canvas.img, 0, 0);
 	mlx_close_hook(rt.canvas.mlx, &quit, &rt.canvas);

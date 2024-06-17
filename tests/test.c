@@ -45,9 +45,12 @@ bool	color_eq(t_color a, t_color b)
 
 t_world	default_world(void)
 {
-	t_world	w;
+	t_world		w;
+	t_matrix	m;
+	t_point		p;
+	t_color		c;
 
-	w = new_world();
+	new_world(&w);
 	w.ambient = new_color(0, 0, 0);
 	w.objs = malloc(sizeof(t_shape) * 2);
 	w.objs_count = 2;
@@ -56,10 +59,12 @@ t_world	default_world(void)
 	w.objs[0].material.diffuse = 0.7;
 	w.objs[0].material.specular = 0.2;
 	new_sphere(&w.objs[1]);
-	set_transform(&(w.objs[1]), scaling(0.5, 0.5, 0.5));
+	scaling(0.5, 0.5, 0.5, &m);
+	set_transform(&(w.objs[1]), &m);
 	w.lights = malloc(sizeof(t_light));
 	w.lights_count = 1;
-	w.lights[0] = new_light(new_point(-10, 10, -10), new_color(1, 1, 1));
+	c = new_color(1, 1, 1);
+	new_light(new_point(-10, 10, -10, &p), &c, &w.lights[0]);
 	return (w);
 }
 
@@ -69,7 +74,7 @@ t_pattern	new_test_pattern(void)
 {
 	t_pattern	test;
 
-	test = new_pattern();
+	new_pattern(&test);
 	test.pattern_at = test_at;
 	test.has_pattern = true;
 	return (test);
@@ -79,4 +84,13 @@ static t_color	test_at(t_pattern *pattern, t_point *shape_point)
 {
 	(void)pattern;
 	return (new_color(shape_point->x, shape_point->y, shape_point->z));
+}
+
+void	new_test_shape(t_shape *shape)
+{
+	t_point	p[2];
+
+	new_shape(shape);
+	new_bounds(new_point(-1, -1, -1, &p[0]), new_point(1, 1, 1, &p[1]),
+		&shape->bounds);
 }

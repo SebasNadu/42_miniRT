@@ -2,11 +2,7 @@
 
 t_color	new_color(double r, double g, double b)
 {
-	return ((t_color){
-		r,
-		g,
-		b,
-	});
+	return ((t_color){r, g, b,});
 }
 
 t_color	add_color(t_color c1, t_color c2)
@@ -40,11 +36,12 @@ t_color	multiply_color(t_color c, double scalar)
 	});
 }
 
-t_color	hadamard_product(t_color c1, t_color c2)
+t_color	*hadamard_product(t_color *c1, t_color *c2, t_color *out)
 {
-	return ((t_color){
-		c1.r * c2.r,
-		c1.g * c2.g,
-		c1.b * c2.b,
-	});
+	*out = (t_color){
+		c1->r * c2->r,
+		c1->g * c2->g,
+		c1->b * c2->b,
+	};
+	return (out);
 }
