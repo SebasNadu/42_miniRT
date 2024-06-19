@@ -1,18 +1,12 @@
 #include "camera.h"
 
-t_camera	*new_camera(t_camera *camera, double hsize, double vsize,
-		double fov)
+static void	set_half_sizes(t_camera *camera, double *hsize, double *vsize)
 {
-	double		aspect;
-	double		half_view;
+	double	aspect;
+	double	half_view;
 
-	camera->hsize = hsize;
-	camera->vsize = vsize;
-	camera->fov = fov;
-	get_identity_matrix(&camera->transform);
-	camera->inverse = camera->transform;
 	half_view = tan(camera->fov / 2.0);
-	aspect = hsize / vsize;
+	aspect = *hsize / *vsize;
 	if (aspect >= 1)
 	{
 		camera->half_width = half_view;
@@ -23,29 +17,28 @@ t_camera	*new_camera(t_camera *camera, double hsize, double vsize,
 		camera->half_width = half_view * aspect;
 		camera->half_height = half_view;
 	}
-	camera->pixel_size = (camera->half_width * 2.0) / hsize;
-	return (camera);
 }
 
-t_ray	*ray_for_pixel(t_camera *camera, double px, double py, t_ray *ray)
+t_camera	*new_camera(t_camera *camera, double hsize, double vsize,
+		double fov)
 {
-	double		world_x;
-	double		world_y;
-	t_point		pixel;
-	t_point		origin;
-	t_vector	direction;
-
-	world_x = camera->half_width - ((px + 0.5) * camera->pixel_size);
-	world_y = camera->half_height - ((py + 0.5) * camera->pixel_size);
-	new_point(world_x, world_y, -1.0, &pixel);
-	multiply_matrix_by_tuple(&camera->inverse, &pixel, &pixel);
-	new_point(0, 0, 0, &origin);
-	multiply_matrix_by_tuple(&camera->inverse, &origin, &origin);
-	normalize(subtract(&pixel, &origin, &direction), &direction);
-	return (new_ray(&origin, &direction, ray));
+	camera->hsize = hsize;
+	camera->vsize = vsize;
+	camera->fov = fov;
+	set_half_sizes(camera, &hsize, &vsize);
+	camera->pixel_size = (camera->half_width * 2.0) / hsize;
+	get_identity_matrix(&camera->transform);
+	camera->inverse = camera->transform;
+	camera->aperture_size = 0.0;
+	camera->focal_length = 1.0;
+	camera->samples = 32;
+	camera->supersampling = false;
+	camera->color_variance_limit = 0.01;
+	return (camera);
 }
 
 void	set_transform_camera(t_camera *camera, t_matrix *transform)
 {
+	camera->transform = *transform;
 	inverse_matrix(transform, &camera->inverse);
 }

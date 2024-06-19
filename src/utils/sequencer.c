@@ -26,6 +26,24 @@ double	halton_sequence(t_sequencer *gen)
 	return (result);
 }
 
+double	van_der_corput_sequence(t_sequencer *gen)
+{
+	double	vdc;
+	double	denom;
+	int		i;
+
+	vdc = 0.0;
+	denom = gen->base;
+	i = ++gen->index;
+	while (i > 0)
+	{
+		vdc += (i % gen->base) / denom;
+		i /= gen->base;
+		denom *= gen->base;
+	}
+	return (vdc);
+}
+
 double	next_sequence(t_sequencer *gen)
 {
 	static double	sequence[] = {0.0, 0.5, 0.25, 0.75, 0.125, 0.625, 0.375,
@@ -39,4 +57,9 @@ double	next_sequence(t_sequencer *gen)
 	if (gen->index >= 48)
 		gen->index = gen->base;
 	return (sequence[gen->index++]);
+}
+
+double	rand_dbl(void)
+{
+	return (((double)rand() / RAND_MAX));
 }

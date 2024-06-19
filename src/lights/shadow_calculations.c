@@ -5,9 +5,8 @@ t_point	*point_on_light(t_light *light, double u, double v, t_point *p)
 {
 	t_point	tmp;
 
-	add(&light->corner, add(multiply(&light->uvec,
-				u + next_sequence(&light->jitter_by), &tmp), multiply(
-				&light->vvec, v + next_sequence(&light->jitter_by), p), p), p);
+	add(&light->corner, add(multiply(&light->uvec, u + rand_dbl(), &tmp),
+			multiply(&light->vvec, v + rand_dbl(), p), p), p);
 	return (p);
 }
 

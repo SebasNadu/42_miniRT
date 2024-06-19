@@ -50,7 +50,9 @@ double		ft_atof(char *str);
 // sequencer.c
 void		new_sequencer(t_sequencer *gen);
 double		halton_sequence(t_sequencer *gen);
+double		van_der_corput_sequence(t_sequencer *gen);
 double		next_sequence(t_sequencer *gen);
+double		rand_dbl(void);
 // threads.c
 bool		set_threads_data(void *data, pthread_t **threads,
 				t_thread_data **t_data, t_threads_setup *setup);

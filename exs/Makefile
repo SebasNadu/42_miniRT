@@ -19,7 +19,7 @@ WHITE       := \033[0;97m
 ifndef EX
 	EX								:= ch01 ch02 ch03 ch04 ch05 ch06 ch07 ch08 ch09 ch10 ch11 \
 											 ch12 ch13 ch14 ch15 ch16 soft_shadows bvh shapes_mapping \
-										 	 texture_mapping skybox spotlight
+										 	 texture_mapping skybox spotlight focal_blur
 endif
 RM								:= rm -rf
 	
@@ -153,6 +153,10 @@ skybox: $(OBJECTS) bonus_skybox.c
 
 .PHONY: spotlight
 spotlight: $(OBJECTS) bonus_spotlight.c
+	@$(call run, "$^")
+
+.PHONY: focal_blur
+focal_blur: $(OBJECTS) bonus_focal_blur.c
 	@$(call run, "$^")
 
 $(OBJECTS):

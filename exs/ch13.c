@@ -180,6 +180,7 @@ void	create_camera(t_camera *camera)
 	t_vector	up;
 
 	new_camera(camera, WIDTH, HEIGHT, M_PI / 3);
+	// camera->supersampling = true;
 	new_point(0, 2, -5, &from);
 	new_point(0, 0, 4, &to);
 	new_vector(0, 1, 0, &up);
