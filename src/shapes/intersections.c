@@ -14,6 +14,8 @@ void	intersect(t_hit **xs, t_shape *s, t_ray *r)
  *  of modulo. MAX_NODES should be a power of 2. */
 #ifdef THREADS
 
+pthread_mutex_t	g_hit_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 t_hit	*intersection(double t, t_shape	*shape)
 {
 	static t_hit	pool[MAX_NODES];

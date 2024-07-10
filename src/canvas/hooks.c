@@ -54,18 +54,6 @@ void	handle_keyhook(mlx_key_data_t keydata, void *param)
 		handle_camera_position(rt, &keydata);
 }
 
-// void	handle_mousehook(mouse_key_t button, action_t action,
-// 		modifier_key_t mods, void *param)
-// {
-// 	t_mini_rt	*rt;
-
-// 	rt = (t_mini_rt *)param;
-// 	if (button == MLX_MOUSE_BUTTON_LEFT && action == MLX_PRESS)
-// 		mlx_set_cursor(rt->canvas.mlx, MLX_CURSOR_DISABLED);
-// 	if (button == MLX_MOUSE_BUTTON_LEFT && action == MLX_RELEASE)
-// 		mlx_set_cursor(rt->canvas.mlx, MLX_CURSOR_NORMAL);
-// }
-
 void	handle_cursorhook(double xpos, double ypos, void *param)
 {
 	t_mini_rt		*rt;

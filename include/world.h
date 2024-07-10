@@ -9,12 +9,6 @@
 # define MAX_RECURSION	4
 # define BVH_THRESHOLD 8
 
-# ifdef THREADS
-
-static pthread_mutex_t	g_lst_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-# endif
-
 typedef struct s_world
 {
 	t_hit		*xs;

@@ -38,6 +38,8 @@ static void	remove_obj(t_list **container, t_shape *obj)
 
 #ifdef THREADS
 
+pthread_mutex_t	g_lst_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 static t_list	*new_lst(t_shape *shape)
 {
 	static t_list	pool[MAX_NODES];
