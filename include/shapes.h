@@ -5,9 +5,14 @@
 # include "materials.h"
 # include "patterns.h"
 # include "utils.h"
-// # include "lights.h"
 
 # define MAX_NODES	512
+
+# ifdef THREADS
+
+static pthread_mutex_t	g_hit_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+# endif
 
 typedef struct s_sphere {
 	t_point	origin;

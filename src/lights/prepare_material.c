@@ -1,6 +1,21 @@
 #include "world.h"
 #include "lights.h"
 
+void	get_map_displacement(t_shape *shape, t_point *point, t_vector *normal)
+{
+	t_color		disp_color;
+	double		disp_value;
+	t_vector	displacement;
+
+	set_interpolate_uv(&shape->material.pattern, shape);
+	uv_texture_color_at(shape->material.pattern.texture[7],
+		&shape->material.pattern.uv.u, &shape->material.pattern.uv.v,
+		&disp_color);
+	disp_value = disp_color.r * shape->material.pattern.disp_intensity;
+	multiply(normal, disp_value, &displacement);
+	add(point, &displacement, point);
+}
+
 static double	get_map_color_double(t_pattern *pattern, t_color *color, int i)
 {
 	if (i == 2)

@@ -1,6 +1,7 @@
 #include "world.h"
 
-t_color	*refracted_color(t_world *world, t_comps *comps, t_color *color)
+t_color	*refracted_color(t_world *world, t_comps *comps, t_color *color,
+			t_hit **xs)
 {
 	t_refrac_params	p;
 	t_tuple			tmp;
@@ -19,11 +20,12 @@ t_color	*refracted_color(t_world *world, t_comps *comps, t_color *color)
 			&tmp), multiply(&comps->view.eye_v, p.n_ratio, &p.direction),
 		&p.direction);
 	new_ray(&comps->under_point, &p.direction, &p.refract_ray);
-	color_at(world, &p.refract_ray, color);
+	color_at(world, &p.refract_ray, color, xs);
 	return (multiply_color(color, comps->obj->material.transparency, color));
 }
 
-t_color	*reflected_color(t_world *world, t_comps *comps, t_color *color)
+t_color	*reflected_color(t_world *world, t_comps *comps, t_color *color,
+			t_hit **xs)
 {
 	t_ray	reflect_ray;
 
@@ -32,7 +34,7 @@ t_color	*reflected_color(t_world *world, t_comps *comps, t_color *color)
 		return (new_color(0, 0, 0, color));
 	world->remaining_recursion--;
 	new_ray(&comps->over_point, &comps->reflect_v, &reflect_ray);
-	color_at(world, &reflect_ray, color);
+	color_at(world, &reflect_ray, color, xs);
 	return (multiply_color(color, comps->obj->material.reflective, color));
 }
 
@@ -59,7 +61,8 @@ double	schlick(t_comps *comps)
 	return (r0[0] + (1.0 - r0[0]) * pow(1.0 - cos_i, 5));
 }
 
-t_color	*reflec_and_refrac(t_world *world, t_comps *comps, t_color *surface)
+t_color	*reflec_and_refrac(t_world *world, t_comps *comps, t_color *surface,
+			t_hit **xs)
 {
 	t_color	reflected;
 	t_color	refracted;
@@ -67,9 +70,9 @@ t_color	*reflec_and_refrac(t_world *world, t_comps *comps, t_color *surface)
 	int		local_remaining;
 
 	local_remaining = world->remaining_recursion;
-	reflected_color(world, comps, &reflected);
+	reflected_color(world, comps, &reflected, xs);
 	world->remaining_recursion = local_remaining;
-	refracted_color(world, comps, &refracted);
+	refracted_color(world, comps, &refracted, xs);
 	world->remaining_recursion = local_remaining;
 	if (comps->obj->material.reflective > 0
 		&& comps->obj->material.transparency > 0)

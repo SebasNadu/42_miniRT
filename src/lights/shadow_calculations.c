@@ -18,9 +18,10 @@ bool	is_shadowed(t_world *world, t_point *light_pos, t_point *point)
 	t_ray		r;
 	t_hit		*xs;
 
+	xs = NULL;
 	subtract(light_pos, point, &v);
 	new_ray(point, normalize(&v, &tmp), &r);
-	xs = intersect_world(world, &r);
+	xs = intersect_world(world, &r, &xs);
 	if (!xs)
 		return (false);
 	xs = hit(xs);

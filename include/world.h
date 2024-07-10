@@ -9,6 +9,12 @@
 # define MAX_RECURSION	4
 # define BVH_THRESHOLD 8
 
+# ifdef THREADS
+
+static pthread_mutex_t	g_lst_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+# endif
+
 typedef struct s_world
 {
 	t_hit		*xs;
@@ -48,18 +54,23 @@ typedef struct s_refrac_params
 }	t_refrac_params;
 
 t_world	*new_world(t_world *world);
-t_hit	*intersect_world(t_world *world, t_ray *ray);
-t_comps	prepare_computations(t_hit *intersect, t_ray *ray, t_hit *xs);
-t_color	*shade_hit(t_world *world, t_comps *comps, t_color *surface);
-t_color	*color_at(t_world *world, t_ray *ray, t_color *color);
+t_hit	*intersect_world(t_world *world, t_ray *ray, t_hit **xs);
+t_comps	prepare_computations(t_hit *intersect, t_ray *ray, t_hit **xs);
+void	get_map_displacement(t_shape *shape, t_point *point, t_vector *normal);
+t_color	*shade_hit(t_world *world, t_comps *comps, t_color *surface,
+			t_hit **xs);
+t_color	*color_at(t_world *world, t_ray *ray, t_color *color, t_hit **xs);
 double	schlick(t_comps *comps);
 // reflec_and_reflac
-t_color	*reflec_and_refrac(t_world *world, t_comps *comps, t_color *surface);
+t_color	*reflec_and_refrac(t_world *world, t_comps *comps, t_color *surface,
+			t_hit **xs);
 // reflection
-t_color	*reflected_color(t_world *world, t_comps *comps, t_color *color);
+t_color	*reflected_color(t_world *world, t_comps *comps, t_color *color,
+			t_hit **xs);
 // refraction
 void	find_refractive_indices(t_comps *comps, t_hit *i, t_hit *xs);
-t_color	*refracted_color(t_world *world, t_comps *comps, t_color *color);
+t_color	*refracted_color(t_world *world, t_comps *comps, t_color *color,
+			t_hit **xs);
 
 void	free_world(t_world *world);
 

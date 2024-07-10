@@ -1,32 +1,17 @@
 #include "world.h"
 
-t_hit	*intersect_world(t_world *world, t_ray *ray)
+t_hit	*intersect_world(t_world *world, t_ray *ray, t_hit **xs)
 {
 	int		i;
 
-	world->xs = NULL;
+	*xs = NULL;
 	i = -1;
 	while (++i < world->objs_count)
-		intersect(&world->xs, &world->objs[i], ray);
-	return (world->xs);
+		intersect(xs, &world->objs[i], ray);
+	return (*xs);
 }
 
-void	get_map_displacement(t_shape *shape, t_point *point, t_vector *normal)
-{
-	t_color		disp_color;
-	double		disp_value;
-	t_vector	displacement;
-
-	set_interpolate_uv(&shape->material.pattern, shape);
-	uv_texture_color_at(shape->material.pattern.texture[7],
-		&shape->material.pattern.uv.u, &shape->material.pattern.uv.v,
-		&disp_color);
-	disp_value = disp_color.r * shape->material.pattern.disp_intensity;
-	multiply(normal, disp_value, &displacement);
-	add(point, &displacement, point);
-}
-
-t_comps	prepare_computations(t_hit *intersect, t_ray *ray, t_hit *xs)
+t_comps	prepare_computations(t_hit *intersect, t_ray *ray, t_hit **xs)
 {
 	t_comps	c;
 
@@ -46,8 +31,8 @@ t_comps	prepare_computations(t_hit *intersect, t_ray *ray, t_hit *xs)
 	}
 	else
 		c.inside = false;
-	if (xs != NULL)
-		find_refractive_indices(&c, intersect, xs);
+	if (xs && *xs != NULL)
+		find_refractive_indices(&c, intersect, *xs);
 	reflect(&ray->direction, &c.view.normal_v, &c.reflect_v);
 	add(&c.point, multiply(&c.view.normal_v, EPSILON,
 			&c.over_point), &c.over_point);
@@ -79,7 +64,7 @@ static t_shape	*check_parents(t_shape *shape)
 		return (shape);
 }
 
-t_color	*shade_hit(t_world *world, t_comps *comps, t_color *surface)
+t_color	*shade_hit(t_world *world, t_comps *comps, t_color *surface, t_hit **xs)
 {
 	int		i;
 	t_shape	*parent;
@@ -104,19 +89,19 @@ t_color	*shade_hit(t_world *world, t_comps *comps, t_color *surface)
 			add_color(surface, &tmp, surface);
 		}
 	}
-	return (reflec_and_refrac(world, comps, surface));
+	return (reflec_and_refrac(world, comps, surface, xs));
 }
 
-t_color	*color_at(t_world *world, t_ray *ray, t_color *color)
+t_color	*color_at(t_world *world, t_ray *ray, t_color *color, t_hit **xs)
 {
 	t_hit	*intersect;
 	t_comps	comps;
 
 	*color = (t_color){0, 0, 0};
-	intersect_world(world, ray);
-	intersect = hit(world->xs);
+	intersect_world(world, ray, xs);
+	intersect = hit(*xs);
 	if (!intersect)
 		return (color);
-	comps = prepare_computations(intersect, ray, world->xs);
-	return (shade_hit(world, &comps, color));
+	comps = prepare_computations(intersect, ray, xs);
+	return (shade_hit(world, &comps, color, xs));
 }

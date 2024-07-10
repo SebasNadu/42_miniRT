@@ -12,6 +12,27 @@ void	intersect(t_hit **xs, t_shape *s, t_ray *r)
  *  that we can use to build up the list. Also to avoid overflows use
  *  modulo MAX_NODES, to improve the performance it use a bit mask instead
  *  of modulo. MAX_NODES should be a power of 2. */
+#ifdef THREADS
+
+t_hit	*intersection(double t, t_shape	*shape)
+{
+	static t_hit	pool[MAX_NODES];
+	static size_t	index = 0;
+	t_hit			*hit;
+
+	pthread_mutex_lock(&g_hit_pool_mutex);
+	hit = &pool[index++];
+	if (index >= MAX_NODES)
+		index = 0;
+	pthread_mutex_unlock(&g_hit_pool_mutex);
+	hit->t = t;
+	hit->obj = shape;
+	hit->next = NULL;
+	return (hit);
+}
+
+#else
+
 t_hit	*intersection(double t, t_shape	*shape)
 {
 	static t_hit	pool[MAX_NODES];
@@ -26,6 +47,8 @@ t_hit	*intersection(double t, t_shape	*shape)
 	hit->next = NULL;
 	return (hit);
 }
+
+#endif
 
 void	insert_intersection(t_hit **xs, t_hit *hit)
 {

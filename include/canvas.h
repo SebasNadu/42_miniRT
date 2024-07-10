@@ -1,20 +1,23 @@
 #ifndef CANVAS_H
 # define CANVAS_H
 
-# include <stdbool.h>
-# include <fcntl.h>
 # include "MLX42/MLX42.h"
-# include "libft.h"
-# include "world.h"
 # include "camera.h"
+# include "libft.h"
 # include "lights.h"
+# include "world.h"
+# include <fcntl.h>
+# include <stdbool.h>
 
-# define CANVAS_WIDTH	800
+# define CANVAS_WIDTH 800
 # define CANVAS_HEIGHT 600
 
 typedef struct s_canvas {
-	mlx_t				*mlx;
-	mlx_image_t			*img;
+	mlx_t			*mlx;
+	mlx_image_t		*img;
+	int				nb_threads;
+	pthread_t		*threads;
+	t_thread_data	*tdata;
 }	t_canvas;
 
 typedef struct s_mini_rt {

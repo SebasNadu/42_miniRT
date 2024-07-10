@@ -36,6 +36,26 @@ static void	remove_obj(t_list **container, t_shape *obj)
 	}
 }
 
+#ifdef THREADS
+
+static t_list	*new_lst(t_shape *shape)
+{
+	static t_list	pool[MAX_NODES];
+	static size_t	index = 0;
+	t_list			*node;
+
+	pthread_mutex_lock(&g_lst_pool_mutex);
+	node = &pool[index++];
+	if (index >= MAX_NODES)
+		index = 0;
+	pthread_mutex_unlock(&g_lst_pool_mutex);
+	node->content = shape;
+	node->next = NULL;
+	return (node);
+}
+
+#else
+
 static t_list	*new_lst(t_shape *shape)
 {
 	static t_list	pool[MAX_NODES];
@@ -49,6 +69,8 @@ static t_list	*new_lst(t_shape *shape)
 	node->next = NULL;
 	return (node);
 }
+
+#endif
 
 static void	set_indices(t_list *container, double *n)
 {

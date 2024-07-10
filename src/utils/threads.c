@@ -1,6 +1,7 @@
 #include "utils.h"
 
-void	threads_pool(pthread_t **threads, t_thread_data **t_data, int *nb_threads)
+void	threads_pool(pthread_t **threads, t_thread_data **t_data,
+		int *nb_threads)
 {
 	static pthread_t		pool[THREADS_MAX];
 	static t_thread_data	threads_data[THREADS_MAX];
